@@ -9,4 +9,4 @@ bcrypt==4.0.1
 httpx
 pyotp
 cryptography
-bip-utils
+bip_utils==2.9.3
