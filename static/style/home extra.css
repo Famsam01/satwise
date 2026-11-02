@@ -1,0 +1,125 @@
+/* Add after home.css */
+
+/* Greeting: "Welcome back," is fixed, the name comes from signup */
+.home-shell .home-greeting h1 {
+  overflow-wrap: anywhere;
+}
+.home-sub {
+  margin-top: 4px;
+  font-size: 15px;
+  color: #6b7a73;
+}
+
+/* Referral card: code on top, link stacked underneath */
+.home-shell .invite-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 12px;
+}
+.home-shell .invite-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.home-shell .invite-link-row {
+  flex: 0 0 100%;
+  width: 100%;
+  margin: 0;
+  padding-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px dashed rgba(46, 180, 135, 0.45);
+}
+.home-shell .invite-link-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.home-shell .invite-link {
+  display: block;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: #1c3a2f;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+.home-shell .invite-link-row .copy-button {
+  flex: none;
+}
+
+/* Exchanges */
+.ex-card {
+  margin: 18px 0;
+  padding: 18px;
+  background: #fff;
+  border: 1px solid rgba(46, 180, 135, 0.28);
+  border-radius: 20px;
+}
+.ex-head h2 {
+  margin: 0 0 4px;
+  font-size: 17px;
+}
+.ex-head p {
+  margin: 0 0 14px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #6b7a73;
+}
+.ex-group + .ex-group {
+  margin-top: 16px;
+}
+.ex-label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #2eb487;
+}
+.ex-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.ex-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 8px 6px;
+  border: 1px solid #dfe8e3;
+  border-radius: 12px;
+  background: #f7faf8;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+  color: #111;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s,
+    border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.ex-tile:hover,
+.ex-tile:focus-visible {
+  transform: translateY(-2px);
+  border-color: #2eb487;
+  box-shadow: 0 6px 14px rgba(46, 180, 135, 0.18);
+  outline: none;
+}
+.ex-tile:active {
+  transform: scale(0.97);
+}
+.ex-note {
+  margin-top: 14px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: #8a978f;
+}

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f0f0f0" />
+    <title>Nexvest | Deposit Bitcoin</title>
+    <link rel="stylesheet" href="/static/style/settings.css" />
+    <link rel="stylesheet" href="/static/style/deposit.css" />
+  </head>
+  <body>
+    <main class="settings-shell">
+      <header class="page-header">
+        <button
+          class="back-btn"
+          id="backBtn"
+          type="button"
+          aria-label="Go back"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 6l-6 6 6 6" />
+          </svg>
+        </button>
+        <h1 class="page-title">Deposit Bitcoin</h1>
+        <span class="header-spacer"></span>
+      </header>
+
+      <p class="demo-banner" id="demoBanner" hidden>
+        Demo address. Replace it with a real deposit address from your server
+        before going live.
+      </p>
+
+      <!-- ADDRESS + QR -->
+      <section class="card dep-card">
+        <div class="net-row">
+          <span class="coin btc">₿</span>
+          <div class="row-copy">
+            <span class="row-title">Bitcoin (BTC)</span>
+            <span class="row-desc">Network: Bitcoin (on-chain)</span>
+          </div>
+          <span class="price-chip" id="priceChip">…</span>
+        </div>
+
+        <div class="qr-box" id="qrBox" aria-live="polite"></div>
+
+        <p class="addr-label">Your Bitcoin deposit address</p>
+        <p class="addr" id="addr"></p>
+
+        <div class="btn-row">
+          <button class="pill-button primary" id="copyBtn" type="button">
+            Copy address
+          </button>
+          <button class="pill-button" id="shareBtn" type="button">Share</button>
+        </div>
+      </section>
+
+      <!-- OPTIONAL AMOUNT -->
+      <p class="group-label">Request a specific amount (optional)</p>
+      <section class="card amount-card">
+        <label class="field">
+          <span>Amount in USD</span>
+          <input
+            id="usd"
+            type="text"
+            inputmode="decimal"
+            placeholder="e.g. 100"
+            autocomplete="off"
+          />
+        </label>
+        <div class="chips" id="chips">
+          <button type="button" class="chip" data-v="50">$50</button>
+          <button type="button" class="chip" data-v="100">$100</button>
+          <button type="button" class="chip" data-v="250">$250</button>
+          <button type="button" class="chip" data-v="500">$500</button>
+        </div>
+        <p class="conv" id="conv">Enter an amount to add it to the QR code.</p>
+        <p class="form-err" id="amtErr" role="alert"></p>
+      </section>
+
+      <!-- DETAILS -->
+      <p class="group-label">Deposit details</p>
+      <section class="card group list">
+        <div class="list-row">
+          <span class="row-copy"
+            ><span class="row-title">Minimum deposit</span></span
+          ><strong id="dMin"></strong>
+        </div>
+        <div class="list-row">
+          <span class="row-copy"
+            ><span class="row-title">Confirmations needed</span></span
+          ><strong id="dConf"></strong>
+        </div>
+        <div class="list-row">
+          <span class="row-copy"
+            ><span class="row-title">Estimated arrival</span></span
+          ><strong id="dEta"></strong>
+        </div>
+        <div class="list-row">
+          <span class="row-copy"
+            ><span class="row-title">Deposit fee</span></span
+          ><strong id="dFee"></strong>
+        </div>
+      </section>
+
+      <section class="warn" role="note">
+        <strong>Important</strong>
+        <ul>
+          <li>
+            Send <b>only Bitcoin (BTC)</b> to this address, on the
+            <b>Bitcoin network</b>.
+          </li>
+          <li>
+            Other coins or networks (for example BNB Smart Chain or Ethereum)
+            will be lost.
+          </li>
+          <li>Deposits below the minimum are not credited.</li>
+          <li>
+            Always check the first and last characters of the address before
+            sending.
+          </li>
+        </ul>
+      </section>
+
+      <!-- I'VE SENT IT -->
+      <section class="card sent-card">
+        <label class="field">
+          <span>Transaction ID (optional)</span>
+          <input
+            id="txid"
+            type="text"
+            placeholder="Paste the TXID from your wallet"
+            autocomplete="off"
+            spellcheck="false"
+          />
+        </label>
+        <p class="form-err" id="txErr" role="alert"></p>
+        <button class="pill-button primary" id="sentBtn" type="button">
+          I've sent the payment
+        </button>
+      </section>
+
+      <!-- HISTORY -->
+      <p class="group-label">Recent deposits</p>
+      <section class="card group list" id="history"></section>
+
+      <p class="version"><span class="brand-word">Nexvest</span></p>
+    </main>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <script src="/static/JS/user.js"></script>
+    <script src="/static/JS/Qr.js"></script>
+    <script src="/static/JS/deposit.js"></script>
+    <script src="/static/JS/nx_api.js"></script>
+    <script>
+      NXAPI.depositAddress().then((a) => {
+        window.NX_DEPOSIT_ADDRESS = a;
+        const s = document.createElement("script");
+        s.src = "deposit.js";
+        document.body.appendChild(s);
+      });
+    </script>
+  </body>
+</html>

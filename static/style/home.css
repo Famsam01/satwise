@@ -1,0 +1,516 @@
+/* Home page — builds on style.css variables */
+
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.logo {
+  width: 38px;
+  height: 38px;
+  display: block;
+}
+
+.home-greeting {
+  margin-bottom: 22px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.home-greeting h1 {
+  font-size: clamp(26px, 5vw, 32px);
+  line-height: 1.25;
+}
+
+.sub-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* Balance */
+.balance-card {
+  padding: 22px 20px;
+  margin-bottom: 14px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #2eb487 0%, #188866 100%);
+  color: #fff;
+  box-shadow: 0 14px 30px rgba(46, 180, 135, 0.25);
+}
+
+.balance-label {
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.balance-btc {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 8px 0 18px;
+  font-size: clamp(30px, 8vw, 40px);
+  font-weight: 700;
+  letter-spacing: -1px;
+  word-break: break-all;
+}
+
+.btc-symbol {
+  font-size: 0.8em;
+  opacity: 0.9;
+}
+
+.balance-btc small {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
+  opacity: 0.85;
+}
+
+.balance-sub {
+  display: flex;
+  gap: 12px;
+}
+
+.balance-sub > div {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.balance-sub .sub-label {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.balance-sub strong {
+  font-size: 16px;
+  word-break: break-all;
+}
+
+/* Invite */
+.invite-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+  border: 1px dashed var(--green);
+  border-radius: 18px;
+  background: var(--green-pale);
+}
+
+.invite-code {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #245e49;
+}
+
+.copy-button {
+  padding: 10px 20px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--green);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  transition: background 0.15s;
+}
+
+.copy-button:hover {
+  background: var(--green-dark);
+}
+
+/* Chart */
+.chart-card {
+  padding: 18px 16px 14px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: #fff;
+}
+
+.chart-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.live-price {
+  font-size: 24px;
+  letter-spacing: -0.5px;
+}
+
+.chart-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.price-change {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.price-change.up {
+  color: var(--green-dark);
+}
+
+.price-change.down {
+  color: #d64545;
+}
+
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--field);
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.live-badge b {
+  font-weight: 600;
+}
+
+.live-badge i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #b6b9b8;
+}
+
+.live-badge.live {
+  background: #e8f7f0;
+  color: var(--green-dark);
+}
+
+.live-badge.live i {
+  background: var(--green);
+  animation: pulse 1.4s infinite;
+}
+
+.live-badge.sim {
+  background: #fff4e0;
+  color: #a86a00;
+}
+
+.live-badge.sim i {
+  background: #e6a117;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.5);
+  }
+}
+
+.chart-box {
+  position: relative;
+  height: 220px;
+}
+
+.chart-note {
+  margin: 10px 0 0;
+  color: var(--muted);
+  text-align: center;
+  font-size: 12px;
+}
+
+/* ---------- Settings button (replaces help button) ---------- */
+.settings-button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--ink);
+  transition: background 0.15s;
+}
+
+.settings-button:hover {
+  background: var(--green-pale);
+}
+
+.settings-button svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- Layout: room for the fixed nav ---------- */
+.home-shell {
+  padding-bottom: 110px;
+}
+
+.toast {
+  bottom: 96px;
+}
+
+.goal-card,
+.mini-grid {
+  margin-bottom: 14px;
+}
+
+/* ---------- Goal card ---------- */
+.goal-card {
+  padding: 18px 18px 16px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: #fff;
+}
+
+.goal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.goal-title {
+  font-size: 19px;
+  letter-spacing: -0.3px;
+}
+
+.goal-percent {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #e8f7f0;
+  color: var(--green-dark);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.progress {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--field);
+}
+
+.progress span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--green);
+  transition: width 0.8s ease-out;
+}
+
+.goal-numbers {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.goal-numbers span:first-child {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.goal-nudge {
+  margin: 14px 0;
+  color: #53585b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.goal-cta {
+  width: 100%;
+  min-height: 46px;
+  border: 1.5px solid var(--green);
+  border-radius: 999px;
+  background: var(--green-pale);
+  color: var(--green-dark);
+  font-size: 15px;
+  font-weight: 700;
+  transition: background 0.15s;
+}
+
+.goal-cta:hover {
+  background: #e3f5ed;
+}
+
+/* ---------- Next buy + streak ---------- */
+.mini-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.mini-card {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: #fff;
+}
+
+.mini-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  background: #e8f7f0;
+  color: var(--green-dark);
+}
+
+.mini-icon.flame {
+  background: #fff1e3;
+  color: #e8760c;
+}
+
+.mini-icon svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mini-value {
+  display: block;
+  font-size: 19px;
+  letter-spacing: -0.3px;
+}
+
+.mini-note {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.streak-dots {
+  display: flex;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.streak-dots i {
+  flex: 1;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+.streak-dots i.on {
+  background: #e8760c;
+}
+
+/* ---------- Buy now / Withdraw ---------- */
+.action-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.action-row .primary-button {
+  flex: 1.3;
+  margin-top: 0;
+}
+
+.action-withdraw {
+  flex: 1;
+  min-height: 60px;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 700;
+  transition: background 0.15s;
+}
+
+.action-withdraw:hover {
+  background: var(--field);
+}
+
+/* ---------- Bottom navigation ---------- */
+.bottom-nav {
+  position: fixed;
+  z-index: 4;
+  left: 50%;
+  bottom: 0;
+  display: flex;
+  width: min(100%, 520px);
+  padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
+  transform: translateX(-50%);
+}
+
+.nav-item {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 0;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: #9aa09e;
+  font-size: 11px;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+
+.nav-item svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nav-item:hover {
+  color: var(--ink);
+}
+
+.nav-item.active {
+  color: var(--green-dark);
+}
+
+.nav-item.active svg {
+  fill: var(--green-pale);
+}

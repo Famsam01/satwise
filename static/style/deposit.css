@@ -1,0 +1,157 @@
+/* Deposit page (builds on settings.css) */
+.demo-banner {
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #fff2d6;
+  color: #7a5200;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.demo-banner[hidden] {
+  display: none;
+}
+.dep-card {
+  padding: 20px;
+  margin-bottom: 26px;
+}
+.net-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.price-chip {
+  flex: none;
+  padding: 6px 10px;
+  border-radius: 99px;
+  background: var(--brand-soft);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+.qr-box {
+  width: 224px;
+  height: 224px;
+  margin: 0 auto 18px;
+  padding: 10px;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+.qr-box svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.addr-label {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.addr {
+  text-align: center;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+  word-break: break-all;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--pill);
+  margin-bottom: 16px;
+  user-select: all;
+}
+.btn-row {
+  display: flex;
+  gap: 10px;
+}
+.btn-row .pill-button {
+  margin-top: 0;
+  padding: 15px;
+}
+.btn-row .primary {
+  flex: 1.4;
+}
+.btn-row .pill-button:not(.primary) {
+  flex: 1;
+}
+.amount-card,
+.sent-card {
+  padding: 18px;
+  margin-bottom: 26px;
+}
+.amount-card .field,
+.sent-card .field {
+  margin-bottom: 10px;
+}
+.chips {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.chip {
+  flex: 1;
+  padding: 10px 6px;
+  text-align: center;
+  border-radius: 12px;
+  background: var(--pill);
+  font-weight: 700;
+  font-size: 14px;
+}
+.chip.on {
+  background: var(--brand-soft);
+  outline: 2px solid var(--brand);
+}
+.conv {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.conv b {
+  color: var(--text);
+}
+.card.list .list-row strong {
+  font-size: 15px;
+  text-align: right;
+}
+.warn {
+  margin: -6px 0 26px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: #fdeaea;
+  color: #7d1212;
+  font-size: 14px;
+  line-height: 1.5;
+}
+:root[data-theme="dark"] .warn {
+  background: #3a1d1d;
+  color: #ffb3b1;
+}
+.warn ul {
+  margin: 8px 0 0 18px;
+}
+.warn li {
+  margin-bottom: 4px;
+}
+.sent-card .form-err {
+  min-height: 0;
+  margin-bottom: 4px;
+}
+.sent-card .pill-button {
+  margin-top: 4px;
+}
+.dep-row-tx {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+}
+.list .empty {
+  padding: 22px 8px;
+}
+@media (max-width: 360px) {
+  .qr-box {
+    width: 190px;
+    height: 190px;
+  }
+}

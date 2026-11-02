@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f0f0f0" />
+    <title>Nexvest | Settings</title>
+    <link rel="stylesheet" href="/static/style/settings.css" />
+    <style>
+      a.back-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="settings-shell">
+      <header class="page-header">
+        <button
+          class="back-btn"
+          id="backBtn"
+          type="button"
+          aria-label="Go back"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 6l-6 6 6 6" />
+          </svg>
+        </button>
+        <h1 class="page-title">Settings</h1>
+        <a class="back-btn" id="homeBtn" href="home.html" aria-label="Home">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 11l9-8 9 8" />
+            <path d="M5 10v10h14V10" />
+            <path d="M10 20v-6h4v6" />
+          </svg>
+        </a>
+      </header>
+
+      <!-- PROFILE -->
+      <section class="card profile-card">
+        <div class="profile-top">
+          <div>
+            <strong class="profile-name" id="profileName"></strong>
+            <span class="profile-email" id="profileEmail"></span>
+          </div>
+          <div class="avatar" id="avatar"></div>
+        </div>
+        <button class="pill-button" id="viewProfile" type="button">
+          View Profile
+        </button>
+      </section>
+
+      <!-- Sections are rendered from settings.js -->
+      <div id="sections"></div>
+
+      <div class="card group">
+        <button class="row" type="button" id="logoutRow"></button>
+        <button class="row" type="button" id="closeRow"></button>
+      </div>
+
+      <p class="version">v1.0.0<br /><span class="brand-word">Nexvest</span></p>
+    </main>
+
+    <!-- CONFIRM MODAL -->
+    <div class="modal" id="modal" hidden>
+      <div class="modal-box" role="dialog" aria-modal="true">
+        <h2 id="modalTitle"></h2>
+        <p id="modalText"></p>
+        <div class="modal-actions">
+          <button class="pill-button" id="modalCancel" type="button">
+            Cancel
+          </button>
+          <button class="pill-button danger" id="modalOk" type="button">
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM SHEET (PIN, password, investments, switch account, referrals) -->
+    <div class="sheet-backdrop" id="sheet" hidden>
+      <div
+        class="sheet"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="sheetTitle"
+      >
+        <div class="sheet-head">
+          <button
+            class="back-btn"
+            id="sheetClose"
+            type="button"
+            aria-label="Close"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6" />
+            </svg>
+          </button>
+          <h2 id="sheetTitle"></h2>
+          <span class="header-spacer"></span>
+        </div>
+        <div class="sheet-body" id="sheetBody"></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <script src="/static/JS/user.js"></script>
+    <script src="/static/JS/nx_api.js"></script>
+    <script src="/static/JS/settings.js"></script>
+  </body>
+</html>

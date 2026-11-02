@@ -1,0 +1,226 @@
+:root {
+  --card: #ffffff;
+  --text: #111;
+  --muted: #7d7d7d;
+  --field: #f6f6f6;
+  --brand: #2eb487;
+  --danger: #d01f1f;
+}
+:root[data-theme="dark"] {
+  --card: #18201c;
+  --text: #f2f5f3;
+  --muted: #92a098;
+  --field: #232d28;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+body {
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+button {
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.pf-page {
+  min-height: 100vh;
+  background: var(--card);
+}
+.pf-wrap {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 18px 20px 0;
+}
+
+.pf-back {
+  width: 40px;
+  height: 40px;
+  margin-left: -8px;
+  display: grid;
+  place-items: center;
+}
+.pf-back svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pf-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 26px 0 18px;
+}
+.pf-title-row h1 {
+  font-size: 26px;
+  font-weight: 800;
+}
+.pf-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+.pf-group {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 26px 0 14px;
+}
+.pf-field {
+  margin-bottom: 18px;
+  flex: 1;
+  min-width: 0;
+}
+.pf-pair {
+  display: flex;
+  gap: 16px;
+}
+.pf-field label {
+  display: block;
+  font-size: 16.5px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.pf-pair .pf-field label {
+  font-size: 15.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pf-input {
+  position: relative;
+}
+.pf-input input,
+.pf-input select {
+  width: 100%;
+  height: 58px;
+  padding: 0 18px;
+  border: 1.5px solid transparent;
+  border-radius: 16px;
+  background: var(--field);
+  font-size: 16px;
+  outline: none;
+  appearance: none;
+}
+.pf-input.locked input {
+  padding-right: 54px;
+  color: var(--text);
+}
+.pf-input input:focus,
+.pf-input select:focus {
+  border-color: var(--brand);
+  background: var(--card);
+}
+.pf-input input::placeholder {
+  color: #aaa;
+}
+.pf-lock {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  width: 26px;
+  height: 26px;
+  transform: translateY(-50%);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.pf-err {
+  display: block;
+  min-height: 0;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--danger);
+}
+
+.pf-proof {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 14px 0 0;
+  padding: 14px 8px;
+  font-size: 16px;
+  text-align: left;
+}
+.pf-proof svg {
+  flex: none;
+  width: 24px;
+  height: 24px;
+}
+
+.pf-savebar {
+  position: sticky;
+  bottom: 0;
+  margin: 0 -20px;
+  padding: 14px 20px calc(16px + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(transparent, var(--card) 30%);
+}
+.pf-save {
+  width: 100%;
+  padding: 17px;
+  border-radius: 999px;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  transition: opacity 0.2s;
+}
+.pf-save:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pf-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 96px;
+  z-index: 30;
+  transform: translate(-50%, 20px);
+  background: #111;
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.25s;
+  max-width: 90%;
+  text-align: center;
+}
+.pf-toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}

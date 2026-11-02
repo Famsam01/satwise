@@ -1,0 +1,25 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# databases (these hold balances: back them up separately)
+*.db
+*.db-wal
+*.db-shm
+
+# dependencies
+node_modules/
+venv/
+.venv/
+venv311/
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+instance/
+
+# logs / backups
+*.log
+backups/

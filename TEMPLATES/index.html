@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Nexvest | Account Access</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/intl-tel-input@29/dist/css/intlTelInput.css"
+    />
+    <link rel="stylesheet" href="/static/style/style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="brand-row">
+        <a class="brand" href="#">Nexvest</a>
+        <button class="help-button" type="button">?</button>
+      </header>
+
+      <!-- LOGIN PAGE -->
+
+      <section class="auth-card" id="loginView">
+        <div class="welcome">
+          <h1>Welcome back,<br /><span>Investor</span></h1>
+          <p>
+            Pick up right where you left off and keep moving towards your
+            goals—your investments are waiting!
+          </p>
+        </div>
+
+        <form id="loginForm">
+          <label for="loginEmail">Email/Username</label>
+          <input
+            id="loginEmail"
+            type="text"
+            placeholder="Enter your email or username"
+            autocomplete="username"
+            required
+          />
+
+          <label for="loginPassword">Password</label>
+
+          <div class="password-wrap">
+            <input
+              id="loginPassword"
+              type="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            />
+            <button
+              class="eye-button"
+              type="button"
+              data-toggle="loginPassword"
+            >
+              ◉
+            </button>
+          </div>
+
+          <button class="primary-button" type="submit">Login</button>
+
+          <div class="link-row">
+            <button class="text-button" id="forgotButton" type="button">
+              Forgot password?
+            </button>
+
+            <span>
+              Not you?
+              <button class="text-button" id="switchAccount" type="button">
+                Switch account
+              </button>
+            </span>
+          </div>
+        </form>
+
+        <button class="biometric" id="biometricButton" type="button">
+          <span class="fingerprint">◎</span>
+          <small>Biometric login</small>
+        </button>
+
+        <p class="bottom-prompt">
+          Don't have an account?
+          <button class="text-button" type="button" data-view="signup">
+            Sign up
+          </button>
+        </p>
+      </section>
+
+      <!-- SIGN-UP PAGE -->
+
+      <section class="auth-card signup-card hidden" id="signupView">
+        <div class="signup-heading">
+          <button class="back-button" type="button" data-view="login">←</button>
+          <h1>Create your account</h1>
+        </div>
+
+        <p class="privacy-intro">
+          Nexvest values your privacy. We will never share your personal
+          information with anyone.
+        </p>
+
+        <div class="promo">
+          <span class="promo-icon">↗</span>
+          <div>
+            <strong>Investment opportunities</strong>
+            <p>Explore opportunities and make informed decisions.</p>
+          </div>
+        </div>
+
+        <form id="signupForm">
+          <fieldset class="account-types">
+            <legend>Choose account type</legend>
+
+            <label class="account-option selected">
+              <input
+                type="radio"
+                name="accountType"
+                value="individual"
+                checked
+              />
+              <span class="account-icon">♙</span>
+
+              <span class="account-copy">
+                <strong>Individual</strong>
+                <small>
+                  For personal investors looking to grow and manage their
+                  wealth.
+                </small>
+              </span>
+
+              <span class="radio-mark"></span>
+            </label>
+
+            <label class="account-option">
+              <input type="radio" name="accountType" value="corporate" />
+              <span class="account-icon">▣</span>
+
+              <span class="account-copy">
+                <strong>Corporate</strong>
+                <small>
+                  For businesses investing and managing funds on behalf of their
+                  organisation.
+                </small>
+              </span>
+
+              <span class="radio-mark"></span>
+            </label>
+          </fieldset>
+
+          <label for="signupUsername">Username</label>
+          <input
+            id="signupUsername"
+            type="text"
+            placeholder="Choose a username"
+            autocomplete="username"
+            minlength="3"
+            maxlength="20"
+            pattern="[A-Za-z0-9_.]+"
+            required
+          />
+
+          <label for="signupEmail">Email address</label>
+          <input
+            id="signupEmail"
+            type="email"
+            placeholder="Enter your email address"
+            autocomplete="email"
+            required
+          />
+
+          <label for="phone">Phone number</label>
+
+          <input
+            id="phone"
+            type="tel"
+            name="phone"
+            placeholder="Enter your phone number"
+            autocomplete="tel"
+            required
+          />
+
+          <label for="signupPassword">Password</label>
+
+          <div class="password-wrap">
+            <input
+              id="signupPassword"
+              type="password"
+              placeholder="Create a password"
+              minlength="8"
+              autocomplete="new-password"
+              required
+            />
+            <button
+              class="eye-button"
+              type="button"
+              data-toggle="signupPassword"
+            >
+              ◉
+            </button>
+          </div>
+
+          <label for="inviteInput">
+            Invitation code <span class="optional">(optional)</span>
+          </label>
+          <input
+            id="inviteInput"
+            type="text"
+            placeholder="Enter invitation code"
+            autocomplete="off"
+            maxlength="12"
+          />
+
+          <label class="consent">
+            <input id="consent" type="checkbox" required />
+            <span>
+              I agree to the collection and processing of my personal data in
+              accordance with the
+              <a href="#" id="privacyLink">Privacy Policy</a>.
+            </span>
+          </label>
+
+          <button class="primary-button" type="submit">Proceed</button>
+        </form>
+
+        <p class="bottom-prompt">
+          Already have an account?
+          <button class="text-button" type="button" data-view="login">
+            Login
+          </button>
+        </p>
+      </section>
+
+      <div class="toast" id="toast" role="status"></div>
+
+      <footer>
+        © <span id="year"></span> Nexvest · Buiding wealth with confidence.
+      </footer>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@latest/build/js/intlTelInput.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@29/dist/js/utils.js"></script>
+    <script src="/static/JS/user.js"></script>
+    <script src="/static/JS/nx_api.js"></script>
+    <script src="/static/JS/auth.js"></script>
+  </body>
+</html>

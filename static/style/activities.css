@@ -1,0 +1,593 @@
+/* Activity page extras. Load AFTER pages.css.
+   If pages.css already styles any of these, delete the duplicate block here. */
+
+.page-shell {
+  --nx-green: #2eb487;
+  --nx-green-dark: #1f8d68;
+  --nx-green-soft: #e8f7f1;
+  --nx-amber: #e9a93b;
+  --nx-amber-soft: #fff4dc;
+  --nx-ink: #12332b;
+  --nx-muted: #6b7a73;
+  --nx-line: #e3ece8;
+  --nx-track: #e6efeb;
+}
+
+[hidden] {
+  display: none !important;
+}
+.tab-panel.hidden {
+  display: none;
+}
+
+/* ---------- small helpers ---------- */
+.btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+.btn-row .copy-button {
+  flex: 1;
+}
+.copy-button.small {
+  padding: 8px 14px;
+  font-size: 13px;
+  flex: none;
+}
+.link-btn {
+  background: none;
+  border: 0;
+  padding: 10px 0 0;
+  font: inherit;
+  font-size: 13px;
+  color: var(--nx-muted);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.warn-note {
+  background: var(--nx-amber-soft);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+/* ---------- invite box (matches the home page) ---------- */
+.ref-box {
+  margin-top: 14px;
+  padding: 4px 16px;
+  border: 1.5px dashed #8fd3b9;
+  border-radius: 18px;
+  background: #f1faf6;
+}
+.ref-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+}
+.ref-row + .ref-row {
+  border-top: 1px dashed #8fd3b9;
+}
+.ref-info {
+  flex: 1;
+  min-width: 0;
+}
+.ref-label {
+  display: block;
+  font-size: 13px;
+  color: var(--nx-muted);
+  margin-bottom: 4px;
+}
+.ref-code {
+  display: block;
+  font-size: 24px;
+  letter-spacing: 0.28em;
+  color: var(--nx-green-dark);
+}
+.ref-link {
+  display: block;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--nx-ink);
+  word-break: break-all;
+}
+.ref-actions {
+  flex: none;
+  display: flex;
+  gap: 8px;
+}
+.ref-actions .copy-button {
+  padding: 9px 16px;
+  font-size: 14px;
+}
+.nx-error {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #fdecec;
+  color: #a42626;
+  font-size: 14px;
+}
+
+/* ---------- progress bar ---------- */
+.progress {
+  height: 8px;
+  border-radius: 99px;
+  background: var(--nx-track);
+  overflow: hidden;
+  margin-top: 10px;
+}
+.progress > span {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  background: var(--nx-green);
+  transition: width 0.4s ease;
+}
+.goal-numbers {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--nx-muted);
+  margin-top: 8px;
+}
+
+/* ---------- steps (How it works) ---------- */
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+}
+.step {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.step-num {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--nx-green-soft);
+  color: var(--nx-green-dark);
+}
+.step strong {
+  display: block;
+  color: var(--nx-ink);
+}
+.step p {
+  margin: 2px 0 0;
+  font-size: 14px;
+  color: var(--nx-muted);
+}
+
+/* ---------- milestones ---------- */
+.milestone {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--nx-line);
+}
+.milestone:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.milestone:first-child {
+  padding-top: 0;
+}
+.milestone > div {
+  flex: 1;
+  font-weight: 600;
+  color: var(--nx-ink);
+}
+.milestone small {
+  display: block;
+  font-weight: 400;
+  color: var(--nx-muted);
+}
+
+/* ---------- referral circle (SVG) ---------- */
+.rt-svg {
+  display: block;
+  width: 100%;
+  max-width: 340px;
+  margin: 8px auto 0;
+}
+.rt-ring {
+  fill: none;
+  stroke: var(--nx-line);
+  stroke-dasharray: 3 6;
+}
+.rt-line {
+  stroke: var(--nx-track);
+  stroke-width: 2;
+}
+.rt-line.rewarded {
+  stroke: var(--nx-green);
+}
+.rt-line.waiting {
+  stroke: var(--nx-amber);
+}
+.rt-line.invited,
+.rt-line.empty {
+  stroke: #cfd8d4;
+  stroke-dasharray: 4 4;
+}
+.rt-node {
+  fill: #fff;
+  stroke-width: 3;
+  stroke: #cfd8d4;
+}
+.rt-node.rewarded {
+  fill: var(--nx-green-soft);
+  stroke: var(--nx-green);
+}
+.rt-node.waiting {
+  fill: var(--nx-amber-soft);
+  stroke: var(--nx-amber);
+}
+.rt-node.empty {
+  stroke-dasharray: 4 4;
+}
+.rt-root {
+  fill: var(--nx-green);
+}
+.rt-ini {
+  text-anchor: middle;
+  dominant-baseline: central;
+  font-size: 15px;
+  font-weight: 700;
+  fill: var(--nx-ink);
+}
+.rt-ini.muted {
+  fill: #9aa9a2;
+  font-size: 20px;
+}
+.rt-root + .rt-ini {
+  fill: #fff;
+}
+.rt-name {
+  text-anchor: middle;
+  font-size: 11px;
+  fill: var(--nx-muted);
+}
+.rt-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 16px;
+  font-size: 12px;
+  color: var(--nx-muted);
+  margin-top: 4px;
+}
+.rt-legend .d {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-right: 6px;
+  background: #cfd8d4;
+}
+.rt-legend .d.rewarded {
+  background: var(--nx-green);
+}
+.rt-legend .d.waiting {
+  background: var(--nx-amber);
+}
+
+/* ---------- team circle ---------- */
+.members {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 14px 0;
+}
+.member {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  min-width: 54px;
+  font-size: 13px;
+  color: var(--nx-ink);
+}
+.member small {
+  font-size: 11px;
+  color: var(--nx-muted);
+}
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #fff;
+  background: var(--nx-green);
+}
+.avatar.pending {
+  background: #fff;
+  color: var(--nx-muted);
+  border: 2px dashed #cfd8d4;
+}
+.circle-code {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--nx-muted);
+}
+
+/* ---------- share sheet / circle form ---------- */
+.share-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(10, 30, 24, 0.45);
+}
+.sh-box {
+  width: min(480px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 22px 22px 0 0;
+  padding: 20px 20px 24px;
+  animation: sh-up 0.2s ease-out;
+}
+@keyframes sh-up {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+}
+.sh-title {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 14px;
+  color: var(--nx-ink);
+}
+.sh-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px 8px;
+}
+.sh-opt {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 6px 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: 13px;
+  color: var(--nx-ink);
+  text-decoration: none;
+  cursor: pointer;
+}
+.sh-dot {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+}
+.sh-close {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--nx-track);
+  font: inherit;
+  font-weight: 600;
+  color: var(--nx-ink);
+  cursor: pointer;
+}
+.sh-label {
+  display: block;
+  margin: 12px 0 6px;
+  font-size: 13px;
+  color: var(--nx-muted);
+}
+.sh-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid var(--nx-line);
+  border-radius: 12px;
+  font: inherit;
+  color: var(--nx-ink);
+}
+.sh-input:focus {
+  outline: 2px solid var(--nx-green);
+  outline-offset: 1px;
+}
+.sh-box .copy-button {
+  width: 100%;
+  margin-top: 14px;
+}
+
+/* ---------- setup checklist ---------- */
+.checklist {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+.ck {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 0;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--nx-line);
+  font: inherit;
+  color: var(--nx-ink);
+  text-align: left;
+  cursor: pointer;
+}
+.checklist li:last-child .ck {
+  border-bottom: 0;
+}
+.ck-box {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  border: 2px solid #cfd8d4;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  color: #fff;
+}
+.ck.done .ck-box {
+  background: var(--nx-green);
+  border-color: var(--nx-green);
+}
+.ck.done .ck-text {
+  color: var(--nx-muted);
+  text-decoration: line-through;
+}
+.ck-text {
+  flex: 1;
+}
+.ck-go {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--nx-green-dark);
+}
+.ck.done .ck-go {
+  color: var(--nx-muted);
+  font-weight: 400;
+}
+
+/* ---------- streak grid ---------- */
+.streak-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 5px;
+  margin: 14px 0 6px;
+}
+.wk {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  background: var(--nx-track);
+}
+.wk.on {
+  background: var(--nx-green);
+}
+.wk.now {
+  outline: 2px solid var(--nx-ink);
+  outline-offset: 2px;
+}
+.streak-scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--nx-muted);
+}
+
+/* ---------- news accordion ---------- */
+.news {
+  border-bottom: 1px solid var(--nx-line);
+}
+.news:last-child {
+  border-bottom: 0;
+}
+.news summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  cursor: pointer;
+  list-style: none;
+}
+.news summary::-webkit-details-marker {
+  display: none;
+}
+.news summary strong {
+  flex: 1;
+  color: var(--nx-ink);
+}
+.news-arrow {
+  color: var(--nx-muted);
+  transition: transform 0.2s;
+}
+.news[open] .news-arrow {
+  transform: rotate(90deg);
+}
+.news p {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: var(--nx-muted);
+}
+
+/* ---------- feeds ---------- */
+.feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.feed li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--nx-line);
+}
+.feed li:last-child {
+  border-bottom: 0;
+}
+.feed li > div {
+  flex: 1;
+}
+.feed strong {
+  display: block;
+  color: var(--nx-ink);
+}
+.feed small {
+  display: block;
+  color: var(--nx-muted);
+}
+.feed-icon {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--nx-green-soft);
+}
+.feed-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--nx-green-dark);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-box,
+  .progress > span,
+  .news-arrow {
+    animation: none;
+    transition: none;
+  }
+}

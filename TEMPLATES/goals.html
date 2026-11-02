@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Nexvest | Goals</title>
+    <link rel="stylesheet" href="/static/style/style.css" />
+    <link rel="stylesheet" href="/static/style/home.css" />
+    <link rel="stylesheet" href="/static/style/pages.css" />
+  </head>
+  <body>
+    <main class="app-shell home-shell page-shell">
+      <header class="brand-row">
+        <a class="brand-lockup" href="home.html" aria-label="Nexvest home">
+          <svg class="logo" viewBox="0 0 48 48" aria-hidden="true">
+            <rect width="48" height="48" rx="14" fill="#2eb487" />
+            <path
+              d="M17 33V15l14 18V15"
+              fill="none"
+              stroke="#fff"
+              stroke-width="4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle cx="35" cy="13" r="3" fill="#fff" opacity="0.85" />
+          </svg>
+          <span class="brand">Nexvest</span>
+        </a>
+        <button
+          class="settings-button"
+          type="button"
+          id="settingsButton"
+          aria-label="Settings"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+            />
+            <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0-6 0" />
+          </svg>
+        </button>
+      </header>
+
+      <section class="page-title">
+        <h1>Goals and plans</h1>
+        <p>
+          Pick the plan that fits how you stack Bitcoin. Plans change your fees
+          and features. They don't promise profit, because Bitcoin's price can
+          go down as well as up.
+        </p>
+      </section>
+
+      <!-- YOUR GOAL -->
+      <section class="goal-card" aria-label="Your goal">
+        <div class="goal-head">
+          <div>
+            <span class="sub-label">Your goal</span>
+            <strong class="goal-title" id="goalTitle">Stack 0.01 BTC</strong>
+          </div>
+          <span class="goal-percent" id="goalPercent">0%</span>
+        </div>
+        <div
+          class="progress"
+          role="progressbar"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+          id="goalBar"
+        >
+          <span id="goalFill"></span>
+        </div>
+        <div class="goal-numbers">
+          <span id="goalCurrent">0 sats</span>
+          <span id="goalTarget">of 1,000,000 sats</span>
+        </div>
+        <p class="goal-nudge" id="timeToGoal"></p>
+      </section>
+
+      <!-- PLANS -->
+      <h2 class="section-title">Choose your plan</h2>
+      <div class="plan-grid" id="planGrid"></div>
+
+      <!-- SIMULATOR -->
+      <h2 class="section-title">Plan simulator</h2>
+      <section class="card sim-card" aria-label="Plan simulator">
+        <p>
+          See how much Bitcoin a plan could stack. Nobody can predict the price,
+          so pick a what-if and watch how the result changes.
+        </p>
+
+        <div class="sim-row">
+          <div class="sim-label">
+            <label for="simMonthly">Monthly amount</label>
+            <output id="simMonthlyOut">$250</output>
+          </div>
+          <input
+            class="range"
+            id="simMonthly"
+            type="range"
+            min="50"
+            max="5000"
+            step="25"
+            value="250"
+          />
+        </div>
+
+        <div class="sim-row">
+          <div class="sim-label">
+            <label for="simYears">Time</label>
+            <output id="simYearsOut">3 years</output>
+          </div>
+          <input
+            class="range"
+            id="simYears"
+            type="range"
+            min="1"
+            max="10"
+            step="1"
+            value="3"
+          />
+        </div>
+
+        <div class="sim-row">
+          <div class="sim-label">
+            <label for="simGrowth">What-if: Bitcoin price per year</label>
+            <output id="simGrowthOut">0%</output>
+          </div>
+          <input
+            class="range"
+            id="simGrowth"
+            type="range"
+            min="-50"
+            max="100"
+            step="5"
+            value="0"
+          />
+        </div>
+
+        <div class="scenarios" role="group" aria-label="What-if scenarios">
+          <button class="scenario" type="button" data-growth="-30">
+            Falls 30%
+          </button>
+          <button class="scenario active" type="button" data-growth="0">
+            Flat
+          </button>
+          <button class="scenario" type="button" data-growth="30">
+            Rises 30%
+          </button>
+        </div>
+
+        <div class="sim-results">
+          <div class="result">
+            <span class="sub-label">You put in</span>
+            <strong id="outContributed">—</strong>
+          </div>
+          <div class="result">
+            <span class="sub-label">Plan fees</span>
+            <strong id="outFees">—</strong>
+          </div>
+          <div class="result">
+            <span class="sub-label">Sats stacked</span>
+            <strong id="outSats">—</strong>
+          </div>
+          <div class="result">
+            <span class="sub-label">Average buy price</span>
+            <strong id="outAvg">—</strong>
+          </div>
+          <div class="result big">
+            <span class="sub-label">Value at the end of this what-if</span>
+            <strong id="outValue">—</strong>
+            <small id="outDiff"></small>
+          </div>
+        </div>
+        <p class="note" id="simNote"></p>
+      </section>
+
+      <div class="risk">
+        Bitcoin is volatile. You can lose money, and past results don't predict
+        future ones. This simulator is a what-if tool, not a forecast or
+        financial advice.
+      </div>
+
+      <div class="toast" id="toast" role="status"></div>
+
+      <footer>
+        © <span id="year"></span> Nexvest · Building wealth with confidence.
+      </footer>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Main">
+      <button class="nav-item" type="button" data-nav="home">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11l9-8 9 8" />
+          <path d="M5 10v10h14V10" />
+          <path d="M10 20v-6h4v6" />
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="nav-item active" type="button" data-nav="goals">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <circle cx="12" cy="12" r="5" />
+          <circle cx="12" cy="12" r="1.5" />
+        </svg>
+        <span>Goals</span>
+      </button>
+      <button class="nav-item" type="button" data-nav="activity">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 12h4l3-8 4 16 3-8h4" />
+        </svg>
+        <span>Activity</span>
+      </button>
+      <button class="nav-item" type="button" data-nav="learn">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M3 5h7a3 3 0 0 1 2 1 3 3 0 0 1 2-1h7v14h-7a3 3 0 0 0-2 1 3 3 0 0 0-2-1H3z"
+          />
+          <path d="M12 6v14" />
+        </svg>
+        <span>Learn</span>
+      </button>
+    </nav>
+    <script src="/static/JS/user.js"></script>
+    <script src="/static/JS/nx_api.js"></script>
+    <script src="/static/JS/pages.js"></script>
+    <script src="/static/JS/goals.js"></script>
+  </body>
+</html>

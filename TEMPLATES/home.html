@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Nexvest | Home</title>
+    <link rel="stylesheet" href="/static/style/style.css" />
+    <link rel="stylesheet" href="/static/style/home.css" />
+    <link rel="stylesheet" href="/static/style/home%20extra.css" />
+  </head>
+  <body>
+    <main class="app-shell home-shell">
+      <!-- HEADER: logo + name + settings -->
+      <header class="brand-row">
+        <a class="brand-lockup" href="home.html" aria-label="Nexvest home">
+          <svg class="logo" viewBox="0 0 48 48" aria-hidden="true">
+            <rect width="48" height="48" rx="14" fill="#2eb487" />
+            <path
+              d="M17 33V15l14 18V15"
+              fill="none"
+              stroke="#fff"
+              stroke-width="4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle cx="35" cy="13" r="3" fill="#fff" opacity="0.85" />
+          </svg>
+          <span class="brand">Nexvest</span>
+        </a>
+        <button
+          class="settings-button"
+          type="button"
+          id="settingsButton"
+          aria-label="Settings"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+            />
+            <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0-6 0" />
+          </svg>
+        </button>
+      </header>
+
+      <!-- GREETING -->
+      <section class="home-greeting">
+        <p class="eyebrow">Welcome back,</p>
+        <h1 id="welcomeName">Investor</h1>
+        <p class="home-sub">Your Bitcoin portfolio</p>
+      </section>
+
+      <!-- BALANCE CARD -->
+      <section class="balance-card" aria-label="Balance">
+        <span class="balance-label">Total balance</span>
+        <div class="balance-btc">
+          <span class="btc-symbol">₿</span>
+          <span id="balanceBtc">0.00000000</span>
+          <small>BTC</small>
+        </div>
+        <div class="balance-sub">
+          <div>
+            <span class="sub-label">In sats</span>
+            <strong id="balanceSats">0</strong>
+          </div>
+          <div>
+            <span class="sub-label">Approx. value</span>
+            <strong id="balanceUsd">$0.00</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- INVITE CODE -->
+
+      <section class="invite-card" aria-label="Invite code">
+        <div class="invite-copy">
+          <span class="sub-label">Your invite code</span>
+          <strong id="inviteCode" class="invite-code">------</strong>
+        </div>
+        <button class="copy-button" id="copyInvite" type="button">Copy</button>
+
+        <div class="invite-link-row">
+          <div class="invite-link-copy">
+            <span class="sub-label">Your referral link</span>
+            <span class="invite-link" id="inviteLink">—</span>
+          </div>
+          <button class="copy-button ghost" id="copyLink" type="button">
+            Copy link
+          </button>
+        </div>
+      </section>
+
+      <!-- INVESTMENT GOAL -->
+      <section class="goal-card" aria-label="Investment goal">
+        <div class="goal-head">
+          <div>
+            <span class="sub-label">Investment goal</span>
+            <strong class="goal-title" id="goalTitle">Stack 0.01 BTC</strong>
+          </div>
+          <span class="goal-percent" id="goalPercent">0%</span>
+        </div>
+        <div
+          class="progress"
+          role="progressbar"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+          id="goalBar"
+        >
+          <span id="goalFill"></span>
+        </div>
+        <div class="goal-numbers">
+          <span id="goalCurrent">0 sats</span>
+          <span id="goalTarget">of 1,000,000 sats</span>
+        </div>
+        <p class="goal-nudge" id="goalNudge"></p>
+        <button class="goal-cta" id="investMore" type="button">
+          Invest more
+        </button>
+      </section>
+
+      <!-- NEXT BUY + STREAK -->
+      <section class="mini-grid" aria-label="Buying schedule">
+        <div class="mini-card">
+          <div class="mini-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4" y="5" width="16" height="16" rx="2" />
+              <path d="M4 10h16M8 3v4M16 3v4" />
+            </svg>
+          </div>
+          <span class="sub-label">Next buy</span>
+          <strong class="mini-value" id="nextBuy">—</strong>
+          <small class="mini-note" id="nextBuyNote"></small>
+        </div>
+
+        <div class="mini-card">
+          <div class="mini-icon flame">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-6 1-9z"
+              />
+            </svg>
+          </div>
+          <span class="sub-label">Buy streak</span>
+          <strong class="mini-value" id="streakCount">0 weeks</strong>
+          <div class="streak-dots" id="streakDots" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <!-- LIVE CHART -->
+      <section class="chart-card" aria-label="Bitcoin live chart">
+        <div class="chart-head">
+          <div>
+            <span class="sub-label">Bitcoin · BTC/USD</span>
+            <strong id="livePrice" class="live-price">—</strong>
+          </div>
+          <div class="chart-meta">
+            <span id="priceChange" class="price-change">—</span>
+            <span class="live-badge" id="liveBadge"
+              ><i></i><b>Connecting</b></span
+            >
+          </div>
+        </div>
+        <div class="chart-box">
+          <canvas id="priceChart"></canvas>
+        </div>
+        <p class="chart-note" id="chartNote">
+          Last 24 hours · updates every 15s
+        </p>
+      </section>
+
+      <!-- ACTIONS -->
+      <section class="action-row" aria-label="Actions">
+        <button class="primary-button action-buy" id="buyNow" type="button">
+          Buy now
+        </button>
+        <button class="action-withdraw" id="withdrawBtn" type="button">
+          Withdraw
+        </button>
+      </section>
+
+      <!-- EXCHANGES -->
+      <section class="ex-card" aria-label="Popular Bitcoin exchanges">
+        <div class="ex-head">
+          <h2>Buy Bitcoin on trusted exchanges</h2>
+          <p>Tap an exchange to open its website in a new tab.</p>
+        </div>
+        <div class="ex-group">
+          <span class="ex-label">Worldwide exchanges</span>
+          <div class="ex-grid">
+            <a
+              class="ex-tile"
+              href="https://www.binance.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open Binance (opens in a new tab)"
+              ><span style="color: #c99a06">BINANCE</span></a
+            >
+            <a
+              class="ex-tile"
+              href="https://www.mexc.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open MEXC (opens in a new tab)"
+              ><span style="color: #1972e2">MEXC</span></a
+            >
+            <a
+              class="ex-tile"
+              href="https://www.okx.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open OKX (opens in a new tab)"
+              ><span style="color: #111">OKX</span></a
+            >
+            <a
+              class="ex-tile"
+              href="https://www.bitget.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open Bitget (opens in a new tab)"
+              ><span style="color: #00a6b5">Bitget</span></a
+            >
+            <a
+              class="ex-tile"
+              href="https://www.bybit.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open Bybit (opens in a new tab)"
+              ><span style="color: #e08a00">BYBIT</span></a
+            >
+            <a
+              class="ex-tile"
+              href="https://whitebit.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open WhiteBIT (opens in a new tab)"
+              ><span style="color: #444">whitebit</span></a
+            >
+            <a
+              class="ex-tile"
+              href="https://www.gate.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open Gate.io (opens in a new tab)"
+              ><span style="color: #1a5fe0">Gate.io</span></a
+            >
+            <a
+              class="ex-tile"
+              href="https://upbit.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open Upbit (opens in a new tab)"
+              ><span style="color: #0b3a8c; font-style: italic">UPbit</span></a
+            >
+            <a
+              class="ex-tile"
+              href="https://crypto.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open Crypto.com (opens in a new tab)"
+              ><span style="color: #002d74">crypto.com</span></a
+            >
+          </div>
+        </div>
+        <div class="ex-group">
+          <span class="ex-label">USA exchanges</span>
+          <div class="ex-grid">
+            <a
+              class="ex-tile"
+              href="https://www.coinbase.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open Coinbase (opens in a new tab)"
+              ><span style="color: #0052ff">coinbase</span></a
+            >
+            <a
+              class="ex-tile"
+              href="https://www.kraken.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open Kraken (opens in a new tab)"
+              ><span style="color: #5741d9">kraken</span></a
+            >
+            <a
+              class="ex-tile"
+              href="https://robinhood.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open Robinhood (opens in a new tab)"
+              ><span style="color: #0aa90a">Robinhood</span></a
+            >
+          </div>
+        </div>
+        <p class="ex-note">
+          These are third-party websites. Always check the address before you
+          sign in.
+        </p>
+      </section>
+
+      <div class="toast" id="toast" role="status"></div>
+
+      <footer>
+        © <span id="year"></span> Nexvest · Building wealth with confidence.
+      </footer>
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav" aria-label="Main">
+      <button class="nav-item active" type="button" data-nav="home">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11l9-8 9 8" />
+          <path d="M5 10v10h14V10" />
+          <path d="M10 20v-6h4v6" />
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" type="button" data-nav="goals">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <circle cx="12" cy="12" r="5" />
+          <circle cx="12" cy="12" r="1.5" />
+        </svg>
+        <span>Goals</span>
+      </button>
+      <button class="nav-item" type="button" data-nav="activity">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 12h4l3-8 4 16 3-8h4" />
+        </svg>
+        <span>Activity</span>
+      </button>
+      <button class="nav-item" type="button" data-nav="learn">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M3 5h7a3 3 0 0 1 2 1 3 3 0 0 1 2-1h7v14h-7a3 3 0 0 0-2 1 3 3 0 0 0-2-1H3z"
+          />
+          <path d="M12 6v14" />
+        </svg>
+        <span>Learn</span>
+      </button>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <script src="/static/JS/pages.js"></script>
+    <script src="/static/JS/nx_api.js"></script>
+    <script src="/static/JS/home.js"></script>
+  </body>
+</html>
