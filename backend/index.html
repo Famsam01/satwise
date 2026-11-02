@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Nexvest Admin</title>
+    <style>
+      :root {
+        --bg: #f6f7f9;
+        --card: #fff;
+        --tx: #14161a;
+        --mut: #6b7280;
+        --line: #e5e7eb;
+        --pri: #f7931a;
+        --ok: #16a34a;
+        --bad: #dc2626;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0f1115;
+          --card: #171a21;
+          --tx: #eceff4;
+          --mut: #9aa3b2;
+          --line: #262b36;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font:
+          14px system-ui,
+          sans-serif;
+        background: var(--bg);
+        color: var(--tx);
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--line);
+        background: var(--card);
+      }
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 12px;
+      }
+      .stat b {
+        display: block;
+        font-size: 20px;
+        margin-top: 4px;
+      }
+      .stat span {
+        color: var(--mut);
+        font-size: 12px;
+      }
+      input,
+      button {
+        font: inherit;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background: var(--bg);
+        color: var(--tx);
+      }
+      button {
+        cursor: pointer;
+      }
+      button.pri {
+        background: var(--pri);
+        border-color: var(--pri);
+        color: #111;
+        font-weight: 600;
+      }
+      button.ok {
+        color: var(--ok);
+      }
+      button.bad {
+        color: var(--bad);
+      }
+      nav {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+      }
+      nav button.on {
+        background: var(--pri);
+        border-color: var(--pri);
+        color: #111;
+      }
+      .wrap {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 8px;
+        border-bottom: 1px solid var(--line);
+        white-space: nowrap;
+      }
+      th {
+        color: var(--mut);
+        font-weight: 500;
+        font-size: 12px;
+      }
+      .mut {
+        color: var(--mut);
+      }
+      .err {
+        color: var(--bad);
+        margin: 8px 0;
+      }
+      form {
+        display: grid;
+        gap: 10px;
+        max-width: 340px;
+      }
+      code {
+        word-break: break-all;
+        white-space: normal;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <strong>Nexvest Admin</strong><button id="logout" hidden>Log out</button>
+    </header>
+    <main id="app"></main>
+    <script src="admin.js"></script>
+  </body>
+</html>

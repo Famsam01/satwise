@@ -872,7 +872,7 @@ def register(data: RegisterIn):
     send_mail(email, "Your Nexvest verification code", f"Your code is {code}. It expires in 15 minutes. If you didn't sign up, ignore this email.")
     if referrer:
         notify(f"👥 New signup #{uid} via referral from user #{referrer['id']}")
-    return {"token": token, "emailVerified": False}
+    return {"token": token, "emailVerified": True}
  
  
 app.add_api_route("/api/register", register, methods=["POST"])
