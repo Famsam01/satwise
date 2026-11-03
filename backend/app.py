@@ -65,7 +65,7 @@ def env_int(name: str, default: int) -> int:
  
  
 # Supabase: dashboard -> Connect -> copy the "Session pooler" string (works over IPv4, port 5432).
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///app.db").strip()
+DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 if not DATABASE_URL:
     raise RuntimeError("Set DATABASE_URL in your .env file (your Supabase Postgres connection string).")
 DB_POOL_MAX = env_int("DB_POOL_MAX", 12)  # keep >= gunicorn --threads + 2 background threads
