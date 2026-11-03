@@ -65,7 +65,7 @@ def env_int(name: str, default: int) -> int:
  
  
 # Supabase: dashboard -> Connect -> copy the "Session pooler" string (works over IPv4, port 5432).
-DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///app.db").strip()
 if not DATABASE_URL:
     raise RuntimeError("Set DATABASE_URL in your .env file (your Supabase Postgres connection string).")
 DB_POOL_MAX = env_int("DB_POOL_MAX", 12)  # keep >= gunicorn --threads + 2 background threads
@@ -73,8 +73,8 @@ SECRET_KEY = os.getenv("JWT_SECRET", "")
 if not SECRET_KEY:
     raise RuntimeError("Set JWT_SECRET in your .env file (any long random text).")
  
-APP_URL = os.getenv("APP_URL", "http://localhost:8000").rstrip("/")
-CORS_ORIGIN = os.getenv("CORS_ORIGIN", "*")
+APP_URL = os.getenv("APP_URL", "https://satwise.onrender.com").rstrip("/")
+CORS_ORIGIN = os.getenv("CORS_ORIGIN", "https://satwise.onrender.com")
 SMTP_URL = os.getenv("SMTP_URL", "").strip()
 MAIL_FROM = os.getenv("MAIL_FROM", "Nexvest <no-reply@localhost>")
 TG_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
