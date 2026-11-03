@@ -138,10 +138,7 @@ if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 
-pool = ConnectionPool(
-    conninfo=DATABASE_URL, min_size=1, max_size=DB_POOL_MAX, kwargs=_conn_kwargs,
-    open=False, timeout=20, max_lifetime=1800, check=ConnectionPool.check_connection,
-)
+
 class Row(dict):
     """One result row: row["name"] like a dict, and row[0] by position."""
  
