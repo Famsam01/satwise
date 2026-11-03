@@ -102,71 +102,117 @@ document.querySelectorAll('input[name="accountType"]').forEach((radio) => {
 });
 
 // Login form validation
-document.getElementById("loginForm").addEventListener("submit", (event) => {
-  event.preventDefault();
+document
+  .getElementById("loginForm")
+  .addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-  const email = document.getElementById("loginEmail");
-  const password = document.getElementById("loginPassword");
+    const email = document.getElementById("loginEmail");
+    const password = document.getElementById("loginPassword");
 
-  if (!email.value.trim() || !password.value) {
-    showToast("Please enter your email/username and password.");
+    if (!email.value.trim() || !password.value) {
+      showToast("Please enter your email/username and password.");
 
-    (!email.value.trim() ? email : password).focus();
-    return;
-  }
+      (!email.value.trim() ? email : password).focus();
+      return;
+    }
 
-  showToast("Demo only: connect a backend to log in.");
-});
+    const btn = event.currentTarget.querySelector('[type="submit"]');
+    if (btn) btn.disabled = true;
+
+    try {
+      const j = await NXAPI.login(email.value.trim(), password.value);
+      location.href = j.redirect || "/home.html";
+    } catch (e) {
+      showToast(e.message || "Could not sign in. Please try again.");
+      if (btn) btn.disabled = false;
+    }
+  });
 
 // Signup form validation
 
-document.getElementById("signupForm").addEventListener("submit", (event) => {
-  event.preventDefault();
+document
+  .getElementById("signupForm")
+  .addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-  const form = event.currentTarget;
+    const form = event.currentTarget;
 
-  const email = document.getElementById("signupEmail");
-  const phone = document.getElementById("phone");
-  const password = document.getElementById("signupPassword");
-  const consent = document.getElementById("consent");
+    const email = document.getElementById("signupEmail");
+    const phone = document.getElementById("phone");
+    const password = document.getElementById("signupPassword");
+    const consent = document.getElementById("consent");
 
-  if (!email.checkValidity()) {
-    showToast("Please enter a valid email address.");
-    email.focus();
-    return;
-  }
+    if (!email.checkValidity()) {
+      showToast("Please enter a valid email address.");
+      email.focus();
+      return;
+    }
 
-  if (!phoneValidator.isValidNumber()) {
-    showToast("Please select a country and enter a valid phone number.");
-    phone.focus();
-    return;
-  }
+    if (!phoneValidator.isValidNumber()) {
+      showToast("Please select a country and enter a valid phone number.");
+      phone.focus();
+      return;
+    }
 
-  const internationalPhoneNumber = phoneValidator.getNumber();
+    const internationalPhoneNumber = phoneValidator.getNumber();
 
-  if (password.value.length < 8) {
-    showToast("Your password must contain at least 8 characters.");
+    if (password.value.length < 8) {
+      showToast("Your password must contain at least 8 characters.");
 
-    password.focus();
-    return;
-  }
+      password.focus();
+      return;
+    }
 
-  if (!consent.checked) {
-    showToast("Please agree to the Privacy Policy to continue.");
+    if (!consent.checked) {
+      showToast("Please agree to the Privacy Policy to continue.");
 
-    consent.focus();
-    return;
-  }
+      consent.focus();
+      return;
+    }
 
-  const accountType = form.querySelector(
-    'input[name="accountType"]:checked',
-  ).value;
+    const accountType = form.querySelector(
+      'input[name="accountType"]:checked',
+    ).value;
 
-  showToast(
-    `Form validated for ${accountType} account. ` +
-      "Connect a secure backend to create the account.",
-  );
-});
+    const username = document.getElementById("signupUsername").value.trim();
+
+    if (username && !/^[A-Za-z0-9_.]{3,20}$/.test(username)) {
+      showToast("Username: 3-20 characters, letters, numbers, _ and . only.");
+      document.getElementById("signupUsername").focus();
+      return;
+    }
+
+    const btn = form.querySelector('[type="submit"]');
+    if (btn) btn.disabled = true;
+
+    try {
+      // Saves the user in the database, stores the login token, then we go to the home page
+      const j = await NXAPI.register(
+        email.value.trim().toLowerCase(),
+        password.value,
+        NXAPI.refFromUrl() || undefined,
+        {
+          username: username || undefined, // empty = the server makes one from the email
+          phone: internationalPhoneNumber,
+          account_type:
+            accountType === "corporate" ? "corporate" : "individual",
+        },
+      );
+      try {
+        NX.saveSignup({
+          username,
+          email: email.value.trim(),
+          phone: internationalPhoneNumber,
+          accountType,
+        });
+      } catch (e) {}
+      location.href = j.redirect || "/home.html";
+    } catch (e) {
+      showToast(e.message || "Could not create the account. Please try again.");
+      if (btn) btn.disabled = false;
+    }
+  });
 
 // Forgot password
 document.getElementById("forgotButton").addEventListener("click", () => {
@@ -197,11 +243,3 @@ document.getElementById("privacyLink").addEventListener("click", (event) => {
 
 // Automatically update the copyright year
 document.getElementById("year").textContent = new Date().getFullYear();
-
-NX.saveSignup({
-  username: document.getElementById("signupUsername").value.trim(),
-  email: document.getElementById("signupEmail").value.trim(),
-  phone: document.getElementById("phone").value.trim(), // or iti.getNumber() for the full +234... number
-  accountType: document.querySelector('input[name="accountType"]:checked')
-    .value,
-});
