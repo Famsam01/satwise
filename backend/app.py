@@ -129,6 +129,19 @@ def esc(s) -> str:
 # =====================================================================
 # 2. DATABASE
 # =====================================================================
+# Force override the connection parameters if running inside production platform clusters
+if not DATABASE_URL or DATABASE_URL.startswith("sqlite"):
+    # Check if an alternative global target is defined by the server environment variables
+    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///app.db")
+
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+
+pool = ConnectionPool(
+    conninfo=DATABASE_URL, min_size=1, max_size=DB_POOL_MAX, kwargs=_conn_kwargs,
+    open=False, timeout=20, max_lifetime=1800, check=ConnectionPool.check_connection,
+)
 class Row(dict):
     """One result row: row["name"] like a dict, and row[0] by position."""
  
