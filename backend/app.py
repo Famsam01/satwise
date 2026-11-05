@@ -1466,15 +1466,29 @@ def admin_adjust(uid):
         raise ApiError(400, "Could not adjust (user missing or balance would go negative)")
     notify(f"🛠 Admin #{admin['id']} adjusted user #{uid} by {data.sats:+,} sats\nReason: {esc(data.reason)}")
     return {"ok": True, "balanceSats": bal}
- 
+
 @app.get("/api/health")
 def health():
+    import socket
+    u = urlparse(DATABASE_URL)
+    out = {"host": u.hostname, "port": u.port,
+           "pooler_style_user": "." in (u.username or "")}
+    t = time.time()
     try:
-        with db() as c:
-            c.execute("SELECT 1")
-        return {"db": "ok", "pool": str(pool.get_stats())}
+        out["dns"] = sorted({a[4][0] for a in socket.getaddrinfo(u.hostname, u.port or 5432)})[:4]
     except Exception as e:  # noqa: BLE001
-        return {"db": "FAILED", "error": repr(e)}, 503 
+        out["dns"] = repr(e)
+    out["dns_s"] = round(time.time() - t, 2)
+    t = time.time()
+    try:
+        with psycopg.connect(DATABASE_URL, connect_timeout=8, sslmode="require", prepare_threshold=None) as conn:
+            conn.execute("SELECT 1")
+        out["fresh_connect"] = "ok"
+    except Exception as e:  # noqa: BLE001
+        out["fresh_connect"] = repr(e)
+    out["fresh_connect_s"] = round(time.time() - t, 2)
+    out["pool"] = str(pool.get_stats())
+    return out
 # =====================================================================
 # 15. STATIC FILES (keep last)
 # =====================================================================
