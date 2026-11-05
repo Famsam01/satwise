@@ -126,9 +126,6 @@
       localStorage.setItem("nx_token", j.token);
       return j;
     },
-    // email verification
-    verifyEmail: (code) => post("/api/verify-email", { code }),
-    resendVerification: () => post("/api/resend-verification"),
     // forgot password: email -> code -> new password
     forgotPassword: (email) => post("/api/forgot-password", { email }),
     checkResetCode: (email, code) =>

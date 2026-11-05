@@ -15,7 +15,7 @@ import sys
 from pathlib import Path
  
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from main import db, hash_password, init_db, iso, new_invite_code  # noqa: E402  (loads your .env and database)
+from app import db, hash_password, init_db, iso, new_invite_code  # noqa: E402  (loads your .env and database)
  
  
 def main() -> None:

@@ -47,6 +47,10 @@ from psycopg_pool import ConnectionPool
 from pydantic import BaseModel, EmailStr, Field, ValidationError
 from werkzeug.exceptions import HTTPException
 from werkzeug.middleware.proxy_fix import ProxyFix
+
+import logging
+logging.basicConfig(level=logging.INFO)
+logging.getLogger("psycopg.pool").setLevel(logging.INFO)
  
 BASE = Path(__file__).resolve().parent   # the folder this file lives in, so paths work anywhere
 load_dotenv(BASE / ".env")
@@ -154,8 +158,15 @@ def row_factory(cursor):
     names = [col.name for col in cursor.description] if cursor.description else []
     return lambda values: Row(zip(names, values))
  
- 
-_conn_kwargs = {"row_factory": row_factory, "prepare_threshold": None}  # None = also works with Supabase's transaction pooler (6543)
+_conn_kwargs = {
+    "row_factory": row_factory,
+    "prepare_threshold": None,   # works with Supabase's transaction pooler too
+    "connect_timeout": 10,       # fail fast so the REAL error shows in the logs
+    "keepalives": 1,             # stop the pooler silently dropping idle connections
+    "keepalives_idle": 30,
+    "keepalives_interval": 10,
+    "keepalives_count": 3,
+}
 if "sslmode=" not in DATABASE_URL and not any(h in DATABASE_URL for h in ("localhost", "127.0.0.1")):
     _conn_kwargs["sslmode"] = "require"
  
@@ -878,8 +889,7 @@ def unique_violation_handler(exc):
  
 @app.errorhandler(psycopg.OperationalError)
 def db_down_handler(exc):
-    """Database unreachable or the connection pool is full."""
-    app.logger.error("database unavailable: %s", exc)
+    app.logger.error("database unavailable: %r | pool: %s", exc, pool.get_stats())
     return jsonify({"error": "Service busy, please try again in a moment"}), 503
  
  
@@ -952,6 +962,9 @@ def register():
     username = data.username
     if username and not re.fullmatch(r"[A-Za-z0-9_.]+", username):
         raise ApiError(422, "Username may only contain letters, numbers, _ and .")
+
+    pw_hash = hash_password(data.password)
+
     with db() as c:
         referrer = None
         if ref:
@@ -1454,7 +1467,14 @@ def admin_adjust(uid):
     notify(f"🛠 Admin #{admin['id']} adjusted user #{uid} by {data.sats:+,} sats\nReason: {esc(data.reason)}")
     return {"ok": True, "balanceSats": bal}
  
- 
+@app.get("/api/health")
+def health():
+    try:
+        with db() as c:
+            c.execute("SELECT 1")
+        return {"db": "ok", "pool": str(pool.get_stats())}
+    except Exception as e:  # noqa: BLE001
+        return {"db": "FAILED", "error": repr(e)}, 503 
 # =====================================================================
 # 15. STATIC FILES (keep last)
 # =====================================================================

@@ -46,79 +46,6 @@
     location.href = "/home.html";
   }
 
-  // ---------- email verification popup (built here, no HTML changes needed) ----------
-  const panel = document.createElement("div");
-  panel.style.cssText =
-    "display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;background:rgba(0,0,0,.7);padding:16px";
-  panel.innerHTML = `
-    <div style="background:#fff;color:#111;max-width:380px;width:100%;border-radius:16px;padding:24px;font-family:inherit">
-      <h2 style="margin:0 0 8px;font-size:20px">Verify your email</h2>
-      <p id="vText" style="margin:0 0 16px;font-size:14px;line-height:1.5"></p>
-      <input id="vCode" inputmode="numeric" maxlength="6" placeholder="6-digit code"
-        style="width:100%;box-sizing:border-box;padding:12px;font-size:20px;letter-spacing:6px;text-align:center;border:1px solid #bbb;border-radius:10px;margin-bottom:12px">
-      <button id="vBtn" style="width:100%;padding:12px;border:0;border-radius:10px;background:#111;color:#fff;font-size:15px;cursor:pointer">Verify</button>
-      <button id="resendBtn" style="width:100%;padding:10px;margin-top:8px;border:0;background:none;color:#111;cursor:pointer;text-decoration:underline">Resend code</button>
-      <button id="vOut" style="width:100%;padding:8px;border:0;background:none;color:#666;font-size:13px;cursor:pointer">Use a different account</button>
-    </div>`;
-  document.body.appendChild(panel);
-
-  let cooldownTimer = null;
-  function startCooldown(seconds) {
-    const b = $("resendBtn");
-    clearInterval(cooldownTimer);
-    let left = seconds;
-    b.disabled = true;
-    const tick = () => {
-      b.textContent = left > 0 ? "Resend in " + left + "s" : "Resend code";
-      if (left <= 0) {
-        b.disabled = false;
-        clearInterval(cooldownTimer);
-      }
-      left--;
-    };
-    tick();
-    cooldownTimer = setInterval(tick, 1000);
-  }
-  function showVerify(email) {
-    $("vText").textContent =
-      "We sent a 6-digit code to " +
-      (email && email.includes("@") ? email : "your email address") +
-      ". It expires in 15 minutes.";
-    $("vCode").value = "";
-    panel.style.display = "flex";
-    startCooldown(60);
-    $("vCode").focus();
-  }
-  $("vCode").addEventListener("input", () => {
-    $("vCode").value = $("vCode").value.replace(/\D/g, "").slice(0, 6);
-  });
-  $("vBtn").addEventListener("click", async () => {
-    const code = $("vCode").value.trim();
-    if (!/^\d{6}$/.test(code)) return showToast("Enter the 6-digit code.");
-    busy($("vBtn"), true, "Checking…");
-    try {
-      await NXAPI.verifyEmail(code);
-      done();
-    } catch (x) {
-      showToast(x.message);
-    } finally {
-      busy($("vBtn"), false);
-    }
-  });
-  $("resendBtn").addEventListener("click", async () => {
-    try {
-      await NXAPI.resendVerification();
-      showToast("A new code was sent.");
-      startCooldown(60);
-    } catch (x) {
-      showToast(x.message);
-    }
-  });
-  $("vOut").addEventListener("click", () => {
-    localStorage.removeItem("nx_token");
-    panel.style.display = "none";
-  });
-
   // ---------- page buttons ----------
   document
     .querySelectorAll("[data-view]")
@@ -188,7 +115,9 @@
     const accountType = form.querySelector(
       'input[name="accountType"]:checked',
     ).value;
-    const ref = (NXAPI.refFromUrl() || "").toUpperCase() || undefined;
+
+    const typed = $("inviteInput") ? $("inviteInput").value.trim() : "";
+    const ref = (typed || NXAPI.refFromUrl() || "").toUpperCase() || undefined;
 
     const btn = form.querySelector('button[type="submit"]');
     busy(btn, true);
@@ -198,7 +127,7 @@
         phone,
         account_type: accountType,
       });
-      showVerify(email.value.trim());
+      done(); // goes straight to /home.html, with no verification step
     } catch (x) {
       showToast(x.message);
     } finally {
