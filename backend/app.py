@@ -48,9 +48,7 @@ from pydantic import BaseModel, EmailStr, Field, ValidationError
 from werkzeug.exceptions import HTTPException
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-import logging
-logging.basicConfig(level=logging.INFO)
-logging.getLogger("psycopg.pool").setLevel(logging.INFO)
+
  
 BASE = Path(__file__).resolve().parent   # the folder this file lives in, so paths work anywhere
 load_dotenv(BASE / ".env")
