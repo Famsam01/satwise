@@ -43,7 +43,7 @@ from flask import Flask, jsonify, redirect, request, send_from_directory
 from flask.json.provider import DefaultJSONProvider
 from flask_cors import CORS
 from psycopg import errors as pg_errors
-from psycopg_pool import ConnectionPool
+
 from pydantic import BaseModel, EmailStr, Field, ValidationError
 from werkzeug.exceptions import HTTPException
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -170,11 +170,6 @@ _conn_kwargs = {
 if "sslmode=" not in DATABASE_URL and not any(h in DATABASE_URL for h in ("localhost", "127.0.0.1")):
     _conn_kwargs["sslmode"] = "require"
  
-pool = ConnectionPool(
-    conninfo=DATABASE_URL, min_size=0, max_size=DB_POOL_MAX, kwargs=_conn_kwargs,
-    open=False, timeout=20, max_lifetime=300, max_idle=20,
-    check=ConnectionPool.check_connection,
-)
  
  
 class Conn:
@@ -192,10 +187,10 @@ class Conn:
  
 @contextmanager
 def db():
-    """Borrow a connection from the pool. Saves everything if the block finishes, undoes everything if it raises."""
-    with pool.connection() as raw:
+    """Open a fresh connection for this one job (about 20 ms on Render's private network).
+    Saves everything if the block finishes, undoes everything if it raises."""
+    with psycopg.connect(DATABASE_URL, **_conn_kwargs) as raw:
         yield Conn(raw)
- 
  
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS users (
@@ -828,7 +823,6 @@ def startup() -> None:
     if _started:
         return
     _started = True
-    pool.open(wait=True, timeout=30)  # fail early with a clear error if DATABASE_URL is wrong
     init_db()
     if HD_XPUB:
         try:
@@ -843,7 +837,7 @@ def startup() -> None:
  
  
 atexit.register(_stop.set)
-atexit.register(lambda: pool.close())
+
  
 _hits: dict = {}
  
@@ -890,8 +884,7 @@ def unique_violation_handler(exc):
  
 @app.errorhandler(psycopg.OperationalError)
 def db_down_handler(exc):
-    app.logger.error("database unavailable: %r | pool: %s", exc, pool.get_stats())
-    return jsonify({"error": "Service busy, please try again in a moment"}), 503
+    app.logger.error("database unavailable: %r", exc)   
  
  
 @app.errorhandler(HTTPException)
@@ -1468,28 +1461,6 @@ def admin_adjust(uid):
     notify(f"🛠 Admin #{admin['id']} adjusted user #{uid} by {data.sats:+,} sats\nReason: {esc(data.reason)}")
     return {"ok": True, "balanceSats": bal}
 
-@app.get("/api/health")
-def health():
-    import socket
-    u = urlparse(DATABASE_URL)
-    out = {"host": u.hostname, "port": u.port,
-           "pooler_style_user": "." in (u.username or "")}
-    t = time.time()
-    try:
-        out["dns"] = sorted({a[4][0] for a in socket.getaddrinfo(u.hostname, u.port or 5432)})[:4]
-    except Exception as e:  # noqa: BLE001
-        out["dns"] = repr(e)
-    out["dns_s"] = round(time.time() - t, 2)
-    t = time.time()
-    try:
-        with psycopg.connect(DATABASE_URL, connect_timeout=8, sslmode="require", prepare_threshold=None) as conn:
-            conn.execute("SELECT 1")
-        out["fresh_connect"] = "ok"
-    except Exception as e:  # noqa: BLE001
-        out["fresh_connect"] = repr(e)
-    out["fresh_connect_s"] = round(time.time() - t, 2)
-    out["pool"] = str(pool.get_stats())
-    return out
 # =====================================================================
 # 15. STATIC FILES (keep last)
 # =====================================================================
