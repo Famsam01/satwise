@@ -171,8 +171,9 @@ if "sslmode=" not in DATABASE_URL and not any(h in DATABASE_URL for h in ("local
     _conn_kwargs["sslmode"] = "require"
  
 pool = ConnectionPool(
-    conninfo=DATABASE_URL, min_size=1, max_size=DB_POOL_MAX, kwargs=_conn_kwargs,
-    open=False, timeout=20, max_lifetime=1800, check=ConnectionPool.check_connection,
+    conninfo=DATABASE_URL, min_size=0, max_size=DB_POOL_MAX, kwargs=_conn_kwargs,
+    open=False, timeout=20, max_lifetime=300, max_idle=20,
+    check=ConnectionPool.check_connection,
 )
  
  
