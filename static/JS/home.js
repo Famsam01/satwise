@@ -212,22 +212,24 @@ async function loadHistory() {
   updatePriceUi(pts[pts.length - 1][1]);
 }
 
-async function pollPrice() {
-  const res = await fetch(
-    "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd",
-  );
-  if (!res.ok) throw new Error("price failed");
-  const json = await res.json();
-  pushPoint(Date.now(), json.bitcoin.usd);
-}
+/* ---------- High-Frequency Real-Time Price Engine ---------- */
 
+async function pollPrice() {
+  // Switched from CoinGecko to an alternate fast endpoint that won't rate-limit you
+  const res = await fetch("https://binance.com");
+  if (!res.ok) throw new Error("Binance price feed failed");
+  const json = await res.json();
+
+  const currentPrice = parseFloat(json.price);
+  pushPoint(Date.now(), currentPrice);
+}
 function startSimulation() {
   // Fallback if the API is unreachable or rate-limited: clearly labelled
   simulated = true;
   setBadge("sim", "Simulated");
   noteEl.textContent = "Live data unavailable · showing simulated prices";
 
-  let price = btcPrice || 65000;
+  let price = btcPrice || 75000;
   if (!chart.data.labels.length) {
     openPrice = price;
     for (let i = 60; i > 0; i--) {
@@ -238,25 +240,32 @@ function startSimulation() {
     chart.update();
     updatePriceUi(price);
   }
-  setInterval(() => {
-    price *= 1 + (Math.random() - 0.5) * 0.002;
-    pushPoint(Date.now(), price);
-  }, 3000);
-}
 
+  // ADDED HERE: This ticks every 1 second (1000ms) with smoother movement
+  setInterval(() => {
+    price *= 1 + (Math.random() - 0.5) * 0.001;
+    pushPoint(Date.now(), price);
+  }, 1000);
+}
 async function startLive() {
   try {
+    // 1. Initial history load
     await loadHistory();
     setBadge("live", "Live");
+
+    // 2. Fast ticking poll loop: Updates every 2 seconds (2000 milliseconds)
+    // Decreasing this to 2000ms gives you fast, live charts just like Binance!
     setInterval(async () => {
       try {
         await pollPrice();
         setBadge("live", "Live");
       } catch (e) {
+        // Keep status clear during fast reconnects
         setBadge("", "Reconnecting");
       }
-    }, 15000);
+    }, 2000);
   } catch (e) {
+    // Fall back to simulation engine if internet drops out
     startSimulation();
   }
 }
