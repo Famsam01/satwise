@@ -186,14 +186,9 @@ def db():
     """Dynamically connects to SQLite locally or PostgreSQL in production."""
     # CASE 1: SQLite Logic (Local Machine development)
     if DATABASE_URL.startswith("sqlite://"):
-        # Strip out the clean file prefix path
         db_file = DATABASE_URL.replace("sqlite:///", "").replace("sqlite://", "")
-        
-        # Connect to SQLite
         conn = sqlite3.connect(db_file)
-        # Force SQLite rows to behave like dictionaries/objects to match Postgres behavior
         conn.row_factory = sqlite3.Row 
-        
         try:
             yield conn.cursor()
             conn.commit()
@@ -205,17 +200,22 @@ def db():
 
     # CASE 2: PostgreSQL Logic (Render Production deployment)
     else:
-        # Extra connection keywords if your app.py defines them
+        # 1. Import dict_row to fix the mapping issue
+        from psycopg.rows import dict_row 
+        
         _conn_kwargs = locals().get("_conn_kwargs", {})
+        # 2. Assign dict_row so Postgres records match SQLite row formats
+        _conn_kwargs["row_factory"] = dict_row 
         
         with psycopg.connect(DATABASE_URL, **_conn_kwargs) as raw:
-            # Force psycopg to automatically commit transactions when block completes
             raw.autocommit = False 
             try:
-                yield raw.cursor()
+                # 3. Wrap the cursor using the custom translator class 'Conn'
+                yield Conn(raw.cursor())
             except Exception:
                 raw.rollback()
                 raise
+
 
  
 SCHEMA = """
