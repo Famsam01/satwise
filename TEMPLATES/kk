@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Satwise | Profile</title>
+    <link rel="stylesheet" href="/static/style/profile.css" />
+  </head>
+  <body>
+    <main class="pf-page">
+      <div class="pf-wrap">
+        <button class="pf-back" id="pfBack" type="button" aria-label="Back">
+          <svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
+        </button>
+
+        <div class="pf-title-row">
+          <h1>Profile Information</h1>
+          <div class="pf-avatar" id="pfAvatar"></div>
+        </div>
+
+        <form id="pfForm" novalidate>
+          <div id="pfSections"></div>
+
+          <button class="pf-proof" id="pfProofBtn" type="button">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M4 20h4L19 9l-4-4L4 16z"
+                fill="currentColor"
+                stroke="none"
+              />
+            </svg>
+            <span id="pfProof"></span>
+          </button>
+          <input
+            id="pfFile"
+            type="file"
+            accept="image/*,application/pdf"
+            hidden
+          />
+
+          <div class="pf-savebar">
+            <button class="pf-save" id="pfSave" type="submit" disabled>
+              Save changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+    <div class="pf-toast" id="pfToast" role="status"></div>
+
+    <script src="/static/JS/user.js"></script>
+    <script src="/static/JS/profile.js"></script>
+  </body>
+</html>

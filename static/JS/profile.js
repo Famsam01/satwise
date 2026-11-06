@@ -226,7 +226,7 @@
           "</section>",
       ).join("") +
       '<datalist id="pfCryptoExchanges">' +
-      CRYPTO.map((c) => '<option value="' + c + '">').join("") +
+      Crypto.map((c) => '<option value="' + c + '">').join("") +
       "</datalist>";
     $("pfAvatar").textContent = NX.initials(U);
     proofLabel();
