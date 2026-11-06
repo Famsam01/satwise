@@ -1190,6 +1190,10 @@ def me():
         # extra fields from your old API, so older pages keep working
         "balance_sats": sats, "balance_btc": f"{sats / SATS_PER_BTC:.8f}", "goal_sats": GOAL_SATS,
         "goal_percent": min(100, round(sats / GOAL_SATS * 100, 2)), "invite_code": u["invite_code"],
+        "username": u["username"],
+        "email": u["email"],
+        "phone_number": u["phone_number"], # <--- Ensure this translation key exists!
+        "accountType": u.get("account_type", "individual")
     }
  
  

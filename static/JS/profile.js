@@ -62,7 +62,7 @@
         { k: "lastName", l: "Last Name", ph: "Enter your last name" },
         { k: "username", l: "Username", lock: true },
         { k: "email", l: "Email Address", lock: true },
-        { k: "phone", l: "Phone Number", lock: true },
+        { k: "phone_number", l: "Phone Number", lock: true },
         { k: "accountType", l: "Account Type", lock: true },
       ],
     },
