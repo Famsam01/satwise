@@ -383,8 +383,8 @@
     $("copyCode").onclick = () => copyText(code, "Invite code copied.");
     $("shareRef").onclick = () =>
       share(
-        "Join me on Nexvest",
-        "Stack Bitcoin with me on Nexvest. Use my invite code " +
+        "Join me on Satwise",
+        "Stack Bitcoin with me on Satwise. Use my invite code " +
           code +
           " when you sign up.",
         link,
@@ -524,7 +524,7 @@
         const code = inviteCode();
         share(
           "Join my Stack Circle",
-          `Join my Stack Circle "${CIRCLE.name}" on Nexvest. Use my invite code ${code} when you sign up.`,
+          `Join my Stack Circle "${CIRCLE.name}" on Satwise. Use my invite code ${code} when you sign up.`,
           buildLink(code, { circle: circleCode() }),
         );
       };

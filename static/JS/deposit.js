@@ -177,7 +177,7 @@
   $("copyBtn").onclick = () => copyText(ADDRESS);
   $("addr").onclick = () => copyText(ADDRESS);
   $("shareBtn").onclick = () => {
-    const text = "My Nexvest Bitcoin deposit address:\n" + ADDRESS;
+    const text = "My Satwise Bitcoin deposit address:\n" + ADDRESS;
     if (navigator.share)
       navigator
         .share({ title: "Bitcoin deposit address", text })

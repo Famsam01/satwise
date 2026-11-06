@@ -13,26 +13,34 @@
 
   const LOCK =
     '<svg class="pf-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="4"/><path d="M8 10V8a4 4 0 0 1 8 0v2"/><circle cx="12" cy="15.5" r="1.3"/></svg>';
-  const BANKS = [
-    "Access Bank",
-    "Zenith Bank",
-    "GTBank",
-    "First Bank",
-    "UBA",
-    "Fidelity Bank",
-    "FCMB",
-    "Stanbic IBTC",
-    "Sterling Bank",
-    "Union Bank",
-    "Wema Bank",
-    "Polaris Bank",
-    "Ecobank",
-    "Keystone Bank",
-    "Providus Bank",
-    "Kuda",
-    "Opay",
-    "Moniepoint",
-    "PalmPay",
+  const Crypto = [
+    "Coinbase",
+    "MEXC",
+    "Bitget",
+    "OKX",
+    "Binance",
+    "KuCoin",
+    "Bybit",
+    "Gate.io",
+    "BitMart",
+    "Bitfinex",
+    "Huobi",
+    "Kraken",
+    "Bitstamp",
+    "Poloniex",
+    "Bittrex",
+    "Gemini",
+    "Crypto.com",
+    "eToro",
+    "BitFlyer",
+    "Coincheck",
+    "Liquid",
+    "Upbit",
+    "WazirX",
+    "Luno",
+    "Bitso",
+    "Paxful",
+    "Changelly",
   ];
   const RELATIONS = [
     "Spouse",
@@ -74,24 +82,30 @@
       ],
     },
     {
-      id: "bank",
-      title: "Bank Details",
+      id: "crypto",
+      title: "Crypto Account",
       fields: [
         {
-          k: "bankName",
-          l: "Bank Name",
-          ph: "Select or type your bank",
-          list: "pfBanks",
+          k: "cryptoExchange",
+          l: "Crypto Exchange",
+          ph: "Select or type your crypto exchange",
+          list: "pfCryptoExchanges",
         },
-        { k: "accountName", l: "Account Name", ph: "Name on the account" },
         {
-          k: "accountNumber",
-          l: "Account Number",
-          ph: "10-digit account number",
-          attr: ' inputmode="numeric" maxlength="10"',
+          k: "exchangeUid",
+          l: "Exchange User ID (UID)",
+          ph: "Your user ID on the exchange",
+          validate: "exchangeUid",
+        },
+        {
+          k: "cryptoaddress",
+          l: "Crypto Address / Public Key",
+          ph: "Enter your public wallet address",
+          validate: "cryptoAddress",
         },
       ],
     },
+
     {
       id: "kin",
       title: "Next of Kin",
@@ -109,8 +123,16 @@
   ];
   const ALL = S.flatMap((s) => s.fields.flat());
   const RULES = {
-    accountNumber: (v) =>
-      !v || /^\d{10}$/.test(v) || "Account number must be 10 digits",
+    cryptoAddress: (v) =>
+      !v ||
+      /^(0x[a-fA-F0-9]{40}|[13km][a-km-zA-HJ-NP-Z1-9]{25,34}|bc1[a-zA-HJ-NP-Z0-9]{25,62})$/.test(
+        v,
+      ) ||
+      "Enter a valid crypto wallet address",
+    exchangeUid: (v) =>
+      !v ||
+      /^\d{5,12}$/.test(v) ||
+      "Enter a valid exchange User ID (5-12 digits)",
     nokPhone: (v) =>
       !v ||
       /^\+?\d{7,15}$/.test(v.replace(/[\s-]/g, "")) ||
@@ -203,8 +225,8 @@
             .join("") +
           "</section>",
       ).join("") +
-      '<datalist id="pfBanks">' +
-      BANKS.map((b) => '<option value="' + b + '">').join("") +
+      '<datalist id="pfCryptoExchanges">' +
+      CRYPTO.map((c) => '<option value="' + c + '">').join("") +
       "</datalist>";
     $("pfAvatar").textContent = NX.initials(U);
     proofLabel();

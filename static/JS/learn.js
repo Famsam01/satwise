@@ -28,7 +28,7 @@ document.getElementById("supportForm").addEventListener("submit", (event) => {
     return;
   }
 
-  const subject = encodeURIComponent(`Nexvest support: ${topic}`);
+  const subject = encodeURIComponent(`Satwise support: ${topic}`);
   const body = encodeURIComponent(
     `${message}\n\n---\nName: ${name}\nEmail: ${email}`,
   );

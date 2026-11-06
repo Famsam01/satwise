@@ -138,7 +138,7 @@
           icon: "switch",
           color: "#0b7285",
           title: "Switch Account",
-          desc: "Move between your Nexvest accounts",
+          desc: "Move between your Satwise accounts",
           chev: true,
         },
       ],
@@ -728,7 +728,7 @@
                 Math.abs(chg).toFixed(2) +
                 "% today</span>"
               : "") +
-            '<span class="wb">Nexvest</span>';
+            '<span class="wb">Satwise</span>';
         };
         draw();
         loadPrice().then(() => sheetKind === "widget" && draw());
@@ -763,7 +763,7 @@
           } else {
             store.set("nx_widget", widgetCfg());
             $("wHint").textContent =
-              "Settings saved. To place it: on iPhone use Share → Add to Home Screen; on Android use the browser menu → Install app / Add to Home screen, then long-press your home screen and choose the Nexvest widget.";
+              "Settings saved. To place it: on iPhone use Share → Add to Home Screen; on Android use the browser menu → Install app / Add to Home screen, then long-press your home screen and choose the Satwise widget.";
             toast("Widget settings saved");
           }
         };

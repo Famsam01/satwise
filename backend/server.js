@@ -50,7 +50,7 @@ const h = (s) =>
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /* ===================== DATABASE ===================== */
-const db = new Database("nexvest.db");
+const db = new Database("satwise.db", { fileMustExist: false });
 db.pragma("journal_mode = WAL");
 db.exec(`
 CREATE TABLE IF NOT EXISTS users (
@@ -185,7 +185,7 @@ async function sendMail(to, subject, text) {
     return console.log(`[DEV EMAIL] to=${to} | ${subject} | ${text}`);
   try {
     await mailer.sendMail({
-      from: E.MAIL_FROM || "Nexvest <no-reply@localhost>",
+      from: E.MAIL_FROM || "Satwise <satwisehr@gmail.com>",
       to,
       subject,
       text,
@@ -597,7 +597,7 @@ function issueVerification(userId, email) {
   ).run(hashCode(userId, code), Date.now() + 15 * 60000, Date.now(), userId);
   sendMail(
     email,
-    "Your Nexvest verification code",
+    "Your Satwise verification code",
     `Your code is ${code}. It expires in 15 minutes. If you didn't sign up, ignore this email.`,
   );
 }
@@ -716,7 +716,7 @@ app.post("/api/2fa/setup", auth, (req, res) => {
   );
   res.json({
     secret,
-    otpauth: authenticator.keyuri(u.email, "Nexvest", secret),
+    otpauth: authenticator.keyuri(u.email, "Satwise", secret),
   }); // render otpauth as a QR on the page
 });
 app.post("/api/2fa/enable", auth, (req, res) => {
@@ -1071,11 +1071,9 @@ admin.post("/users/:id/adjust", (req, res) => {
     );
     res.json({ ok: true, balanceSats: bal });
   } catch (e) {
-    res
-      .status(400)
-      .json({
-        error: "Could not adjust (user missing or balance would go negative)",
-      });
+    res.status(400).json({
+      error: "Could not adjust (user missing or balance would go negative)",
+    });
   }
 });
 app.use("/api/admin", admin);
@@ -1093,7 +1091,7 @@ app.use(
 );
 
 app.listen(PORT, () => {
-  console.log("Nexvest backend on :" + PORT);
+  console.log("Satwise backend on :" + PORT);
   setInterval(checkDeposits, 60000);
   checkDeposits();
   telegramPoll();
