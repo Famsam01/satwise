@@ -216,8 +216,8 @@ async function loadHistory() {
 
 async function pollPrice() {
   // Switched from CoinGecko to an alternate fast endpoint that won't rate-limit you
-  const res = await fetch("https://binance.com");
-  if (!res.ok) throw new Error("Binance price feed failed");
+  const res = await fetch("https://binance.info");
+  if (!res.ok) throw new Error("Price feed failed");
   const json = await res.json();
 
   const currentPrice = parseFloat(json.price);
