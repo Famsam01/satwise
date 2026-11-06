@@ -217,6 +217,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE UNIQUE INDEX IF NOT EXISTS users_email_lower ON users (lower(email));
 CREATE UNIQUE INDEX IF NOT EXISTS users_username_lower ON users (lower(username));
 CREATE INDEX IF NOT EXISTS users_referred_by ON users (referred_by);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS auto_referred INTEGER NOT NULL DEFAULT 0;
  
 CREATE TABLE IF NOT EXISTS sessions (
     token TEXT PRIMARY KEY,
@@ -659,7 +660,7 @@ def try_referral_bonus(conn, user_id: int) -> bool:
         return False
     if conn.execute("UPDATE users SET referral_bonus_paid=1 WHERE id=? AND referral_bonus_paid=0", (user_id,)).rowcount == 0:
         return False
-    if REF_BONUS_NEW > 0:
+    if REF_BONUS_NEW > 0 and not u["auto_referred"]:
         adjust_balance(conn, user_id, REF_BONUS_NEW, "referral_bonus", f"ref:{user_id}")
     if REF_BONUS_REFERRER > 0:
         adjust_balance(conn, u["referred_by"], REF_BONUS_REFERRER, "referral_bonus", f"ref:{user_id}")
@@ -668,10 +669,12 @@ def try_referral_bonus(conn, user_id: int) -> bool:
  
 def announce_referral(user_id: int) -> None:
     """Tell you (Telegram) and the new user (email) that a bonus was paid."""
-    notify(f"🎁 <b>Referral bonus paid</b>\nNew user #{user_id}: +{fmt(REF_BONUS_NEW)} sats\nReferrer: +{fmt(REF_BONUS_REFERRER)} sats")
-    if REF_BONUS_NEW > 0:
-        mail_user(user_id, "You received a referral bonus", f"{fmt(REF_BONUS_NEW)} sats were added to your balance.")
- 
+    with db() as c:
+        u = c.execute("SELECT auto_referred FROM users WHERE id=?", (user_id,)).fetchone()
+    new_sats = 0 if (u and u["auto_referred"]) else REF_BONUS_NEW
+    notify(f"🎁 <b>Referral bonus paid</b>\nNew user #{user_id}: +{fmt(new_sats)} sats\nReferrer: +{fmt(REF_BONUS_REFERRER)} sats")
+    if new_sats > 0:
+        mail_user(user_id, "You received a referral bonus", f"{fmt(new_sats)} sats were added to your balance.")
  
 # =====================================================================
 # 9. WITHDRAWAL ACTIONS (used by Telegram AND the admin dashboard)
@@ -882,7 +885,8 @@ def unique_violation_handler(exc):
  
 @app.errorhandler(psycopg.OperationalError)
 def db_down_handler(exc):
-    app.logger.error("database unavailable: %r", exc)   
+    app.logger.error("database unavailable: %r", exc)
+    return jsonify({"error": "Service busy, please try again in a moment"}), 503   
  
  
 @app.errorhandler(HTTPException)
@@ -946,8 +950,9 @@ def unique_username(conn, email: str) -> str:
 @app.post("/api/register")
 @app.post("/api/signup")  # your old URL still works
 def register():
-    """Create an account (saved in the users table) and sign the user in straight away.
-    The page then sends them to the home page (see "redirect" in the reply)."""
+    """Create an account and sign the user in straight away.
+    The FIRST account ever created becomes the admin. Everyone who signs up without a
+    valid invitation code is automatically placed under the admin's referral code."""
     data = parse(RegisterIn)
     ref = (data.ref or data.invite_code or "").strip().upper()
     email = data.email.lower()
@@ -955,31 +960,39 @@ def register():
     if username and not re.fullmatch(r"[A-Za-z0-9_.]+", username):
         raise ApiError(422, "Username may only contain letters, numbers, _ and .")
 
-    pw_hash = hash_password(data.password)
+    pw_hash = hash_password(data.password)  # slow on purpose, so do it before touching the database
 
     with db() as c:
+        # Signups go through one at a time, so two people can never both be "first".
+        c.execute("SELECT pg_advisory_xact_lock(7274002)")
+        is_first = c.execute("SELECT 1 FROM users LIMIT 1").fetchone() is None
+
         referrer = None
         if ref:
             referrer = c.execute("SELECT id FROM users WHERE invite_code=?", (ref,)).fetchone()
             if not referrer:
                 raise ApiError(400, "That referral code is not valid")
+        elif not is_first:
+            # no invitation code: the admin becomes the referrer
+            referrer = c.execute("SELECT id FROM users WHERE is_admin=1 ORDER BY id LIMIT 1").fetchone()
+
         if c.execute("SELECT 1 FROM users WHERE lower(email)=?", (email,)).fetchone():
             raise ApiError(409, "Email already registered")
         if username and c.execute("SELECT 1 FROM users WHERE lower(username)=lower(?)", (username,)).fetchone():
             raise ApiError(409, "Username already taken")
         username = username or unique_username(c, email)
         uid = c.execute(
-            """INSERT INTO users (username,email,phone,account_type,password_hash,invite_code,referred_by,created_at)
-               VALUES (?,?,?,?,?,?,?,?) RETURNING id""",
-            (username, email, data.phone or "", data.account_type, hash_password(data.password),
-             new_invite_code(c), referrer["id"] if referrer else None, now()),
+            """INSERT INTO users (username,email,phone,account_type,password_hash,invite_code,referred_by,created_at,is_admin,auto_referred)
+               VALUES (?,?,?,?,?,?,?,?,?,?) RETURNING id""",
+            (username, email, data.phone or "", data.account_type, pw_hash,
+             new_invite_code(c), referrer["id"] if referrer else None, now(),
+             1 if is_first else 0,
+             1 if (not ref and referrer) else 0),   # 1 = assigned to the admin automatically
         ).fetchone()["id"]
         token = create_session(c, uid)
-    if referrer:
+    if ref and referrer:
         notify(f"👥 New signup #{uid} via referral from user #{referrer['id']}")
-    # emailVerified/twoFactorEnabled are always True/False now; they stay in the reply only so older pages don't break
     return {"token": token, "emailVerified": True, "redirect": "/home.html"}
- 
  
 @app.post("/api/login")
 def login():
