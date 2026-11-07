@@ -55,23 +55,16 @@ function buildReferralLink(code) {
 }
 
 function loadInviteCode() {
-  const user = loadUser();
-
-  // Use the code created at sign-up; only make a new one if none exists
-  let code = user && user.inviteCode;
-  if (!code) {
-    try {
-      code = localStorage.getItem("nexvest_invite");
-    } catch (e) {}
-  }
-  if (!code) {
-    code = generateInviteCode();
-    try {
-      localStorage.setItem("nexvest_invite", code);
-    } catch (e) {}
-  }
-  document.getElementById("inviteCode").textContent = code;
-  document.getElementById("inviteLink").textContent = buildReferralLink(code);
+  // The real code comes from the server (see refreshFromServer below).
+  // Show the last known server code at once, never make one up.
+  let code = "";
+  try {
+    code = localStorage.getItem("nx_ref_code") || "";
+  } catch (e) {}
+  document.getElementById("inviteCode").textContent = code || "…";
+  document.getElementById("inviteLink").textContent = code
+    ? buildReferralLink(code)
+    : "";
 }
 
 async function copyText(text, okMessage) {
@@ -196,33 +189,62 @@ function updatePriceUi(price) {
   renderBalance();
 }
 
-async function loadHistory() {
-  const res = await fetch(
-    "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1",
-  );
-  if (!res.ok) throw new Error("history failed");
-  const json = await res.json();
-  // thin out to ~100 points
-  const step = Math.max(1, Math.floor(json.prices.length / 100));
-  const pts = json.prices.filter((_, i) => i % step === 0);
-  chart.data.labels = pts.map(([t]) => timeLabel(t));
-  chart.data.datasets[0].data = pts.map(([, p]) => p);
-  openPrice = pts[0][1];
-  chart.update();
-  updatePriceUi(pts[pts.length - 1][1]);
+const BINANCE_HOSTS = [
+  "https://api.binance.com",
+  "https://data-api.binance.vision",
+];
+
+async function binanceGet(path) {
+  let lastErr;
+  for (const host of BINANCE_HOSTS) {
+    try {
+      const res = await fetch(host + path);
+      if (res.ok) return await res.json();
+      lastErr = new Error("HTTP " + res.status);
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  throw lastErr;
 }
 
-/* ---------- High-Frequency Real-Time Price Engine ---------- */
+const BUCKET_MS = 15 * 60 * 1000;
+let lastBucket = null;
+
+async function loadHistory() {
+  const [klines, t24] = await Promise.all([
+    binanceGet("/api/v3/klines?symbol=BTCUSDT&interval=15m&limit=96"),
+    binanceGet("/api/v3/ticker/24hr?symbol=BTCUSDT"),
+  ]);
+  chart.data.labels = klines.map((k) => timeLabel(k[0]));
+  chart.data.datasets[0].data = klines.map((k) => parseFloat(k[4]));
+  lastBucket = Math.floor(klines[klines.length - 1][0] / BUCKET_MS);
+  openPrice = parseFloat(t24.openPrice);
+  chart.update();
+  updatePriceUi(parseFloat(t24.lastPrice));
+}
 
 async function pollPrice() {
-  // Switched from CoinGecko to an alternate fast endpoint that won't rate-limit you
-  const res = await fetch("https://binance.info");
-  if (!res.ok) throw new Error("Price feed failed");
-  const json = await res.json();
-
-  const currentPrice = parseFloat(json.price);
-  pushPoint(Date.now(), currentPrice);
+  const j = await binanceGet("/api/v3/ticker/price?symbol=BTCUSDT");
+  const price = parseFloat(j.price);
+  const ts = Date.now();
+  const bucket = Math.floor(ts / BUCKET_MS);
+  const data = chart.data.datasets[0].data;
+  if (bucket === lastBucket && data.length) {
+    data[data.length - 1] = price; // update the current 15-minute point
+  } else {
+    chart.data.labels.push(timeLabel(ts));
+    data.push(price);
+    lastBucket = bucket;
+    if (data.length > MAX_POINTS) {
+      chart.data.labels.shift();
+      data.shift();
+    }
+  }
+  chart.update("none");
+  updatePriceUi(price);
 }
+
 function startSimulation() {
   // Fallback if the API is unreachable or rate-limited: clearly labelled
   simulated = true;
@@ -411,6 +433,9 @@ function refreshFromServer() {
       document.getElementById("welcomeName").textContent =
         me.username || "Investor";
       if (me.referralCode) {
+        try {
+          localStorage.setItem("nx_ref_code", me.referralCode);
+        } catch (e) {}
         document.getElementById("inviteCode").textContent = me.referralCode;
         document.getElementById("inviteLink").textContent = buildReferralLink(
           me.referralCode,

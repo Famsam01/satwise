@@ -700,13 +700,19 @@ def try_referral_bonus(conn, user_id: int) -> bool:
  
  
 def announce_referral(user_id: int) -> None:
-    """Tell you (Telegram) and the new user (email) that a bonus was paid."""
+    """Tell you (Telegram), the new user and the person who referred them (email)."""
     with db() as c:
-        u = c.execute("SELECT auto_referred FROM users WHERE id=?", (user_id,)).fetchone()
-    new_sats = 0 if (u and u["auto_referred"]) else REF_BONUS_NEW
+        u = c.execute("SELECT username, referred_by, auto_referred FROM users WHERE id=?", (user_id,)).fetchone()
+    if not u:
+        return
+    new_sats = 0 if u["auto_referred"] else REF_BONUS_NEW
     notify(f"🎁 <b>Referral bonus paid</b>\nNew user #{user_id}: +{fmt(new_sats)} sats\nReferrer: +{fmt(REF_BONUS_REFERRER)} sats")
     if new_sats > 0:
         mail_user(user_id, "You received a referral bonus", f"{fmt(new_sats)} sats were added to your balance.")
+    if u["referred_by"] and REF_BONUS_REFERRER > 0:
+        mail_user(u["referred_by"], "You earned a referral reward",
+                  f"{u['username']} signed up with your code and made their first deposit. "
+                  f"{fmt(REF_BONUS_REFERRER)} sats were added to your balance.")
  
 # =====================================================================
 # 9. WITHDRAWAL ACTIONS (used by Telegram AND the admin dashboard)
