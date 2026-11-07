@@ -68,24 +68,29 @@
         });
   };
 
-  // Live Bitcoin price (CoinGecko). Cached for a minute; stays null if it can't be reached.
+  // Live Bitcoin price from Binance (same source as the home page). Cached for 10 seconds.
   const priceInfo = { price: null, chg24: null, at: 0 };
   async function loadPrice() {
-    if (priceInfo.price && Date.now() - priceInfo.at < 60000) return priceInfo;
-    try {
-      const ctl = new AbortController();
-      const timer = setTimeout(() => ctl.abort(), 5000);
-      const r = await fetch(
-        "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true",
-        { signal: ctl.signal },
-      );
-      clearTimeout(timer);
-      if (!r.ok) throw new Error("price failed");
-      const j = await r.json();
-      priceInfo.price = j.bitcoin.usd;
-      priceInfo.chg24 = j.bitcoin.usd_24h_change;
-      priceInfo.at = Date.now();
-    } catch (e) {}
+    if (priceInfo.price && Date.now() - priceInfo.at < 10000) return priceInfo;
+    for (const host of [
+      "https://api.binance.com",
+      "https://data-api.binance.vision",
+    ]) {
+      try {
+        const ctl = new AbortController();
+        const timer = setTimeout(() => ctl.abort(), 5000);
+        const r = await fetch(host + "/api/v3/ticker/24hr?symbol=BTCUSDT", {
+          signal: ctl.signal,
+        });
+        clearTimeout(timer);
+        if (!r.ok) continue;
+        const j = await r.json();
+        priceInfo.price = parseFloat(j.lastPrice);
+        priceInfo.chg24 = parseFloat(j.priceChangePercent);
+        priceInfo.at = Date.now();
+        break;
+      } catch (e) {}
+    }
     return priceInfo;
   }
 

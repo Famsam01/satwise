@@ -444,7 +444,8 @@ function refreshFromServer() {
       renderBalance();
       renderGoal();
     })
-    .catch(() => {});
+    //.catch(() => {});
+    .catch((e) => console.error("Could not load account:", e));
 }
 refreshFromServer();
 setInterval(refreshFromServer, 30000); // picks up new deposits without a reload
