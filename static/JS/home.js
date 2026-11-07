@@ -420,7 +420,7 @@ startLive();
 
 /* ---------- Real data from the server ---------- */
 function refreshFromServer() {
-  NXAPI.sync()
+  NXAPI.api("/api/me")
     .then((me) => {
       balanceSats = me.balanceSats;
       buyDaysAgo = (me.transactions || [])
