@@ -46,7 +46,7 @@ const PLANS = [
 ];
 
 // Same demo values as home.js. Replace with the user's real data.
-const DEMO_BALANCE_SATS = 0;
+let DEMO_BALANCE_SATS = 0;
 const GOAL = { title: "Stack 0.01 BTC", targetSats: 1_000_000 };
 const FALLBACK_PRICE = 65_000;
 
