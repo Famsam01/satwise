@@ -970,3 +970,18 @@
   line-height: 1.5;
   color: #5d6f66;
 }
+a.support-item,
+a.support-item:visited {
+  text-decoration: none;
+  color: inherit;
+}
+
+a.support-item strong,
+a.support-item small {
+  text-decoration: none;
+  color: inherit;
+}
+
+a.support-item small {
+  color: #6b7280;
+}
