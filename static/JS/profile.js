@@ -288,4 +288,12 @@
   };
   render();
   focusHash(location.hash);
+  // Fill the locked fields (username, email, phone, account type) from the server
+  if (window.NXAPI) {
+    NXAPI.sync()
+      .then(() => {
+        if (!dirty) render(); // don't wipe anything the user is typing
+      })
+      .catch(() => {});
+  }
 })();

@@ -106,6 +106,8 @@
         accountNumber: me.accountNumber,
         accountName: me.accountName,
         wallets: me.wallets || {},
+        phone_number: me.phone,
+        phone: me.phone,
       });
       return me;
     },
