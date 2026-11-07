@@ -3,9 +3,14 @@
 // Change these to your real support details
 const SUPPORT_EMAIL = "satwisehr@gmail.com";
 const SUPPORT_HOURS = "Monday to Friday, 9:00 to 18:00";
+const SUPPORT_TELEGRAM = "satwise";
 
 document.getElementById("supportEmailText").textContent = SUPPORT_EMAIL;
 document.getElementById("supportHoursText").textContent = SUPPORT_HOURS;
+document.getElementById("supportTelegramText").textContent =
+  "@" + SUPPORT_TELEGRAM;
+document.getElementById("supportTelegramLink").href =
+  "https://t.me/satwise" + SUPPORT_TELEGRAM;
 
 // Prefill name and email if the user signed up on this device
 const knownUser = loadUser();
