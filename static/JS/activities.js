@@ -58,6 +58,7 @@
       { friends: 10, bonusSats: 30000 },
     ],
   };
+  let REF = null; // real referral numbers from the server
 
   const CIRCLE_KEY = "nx_circle";
   const DEMO_CIRCLE = {
@@ -119,12 +120,12 @@
     {
       tag: "New",
       title: "Withdrawals are here",
-      body: "Withdraw to your saved bank account or to a Bitcoin wallet from the Withdraw button on the home page.",
+      body: "Withdraw to your saved Bitcoin wallet from the Withdraw button on the home page.",
     },
     {
       tag: "New",
-      title: "Profile and bank details",
-      body: "Save your personal, bank and next of kin details once. Your name and email from signup are locked for safety.",
+      title: "Profile and crypto wallet details",
+      body: "Save your personal, crypto wallet and next of kin details once. Your name and email from signup are locked for safety.",
     },
     {
       tag: "Preview",
@@ -175,34 +176,12 @@
 
   /* ---------- Invite code + referral link ---------- */
   function inviteCode() {
+    // The real code comes from the server (loadReferralData below). Never invent one.
     let c = "";
     try {
-      c = (window.NX && NX.get().inviteCode) || "";
+      c = localStorage.getItem("nx_ref_code") || "";
     } catch (e) {}
-    try {
-      if (!c && typeof loadUser === "function") {
-        const u = loadUser();
-        c = (u && u.inviteCode) || "";
-      }
-    } catch (e) {}
-    try {
-      if (!c) c = localStorage.getItem("nexvest_invite") || "";
-    } catch (e) {}
-    if (!c) {
-      const abc = "ABCDEFGHJKLMNPQRSTUVWXYZ";
-      c = Array.from(
-        { length: 6 },
-        () => abc[Math.floor(Math.random() * abc.length)],
-      ).join("");
-      try {
-        localStorage.setItem("nexvest_invite", c);
-      } catch (e) {}
-    }
-    c = c.toUpperCase();
-    try {
-      if (window.NX && NX.get().inviteCode !== c) NX.update({ inviteCode: c });
-    } catch (e) {}
-    return c;
+    return c.toUpperCase();
   }
 
   // Builds: <SITE_URL or current folder>/index.html?ref=CODE
@@ -352,7 +331,7 @@
         <circle class="rt-root" cx="${cx}" cy="${cy}" r="32" /><text class="rt-ini" x="${cx}" y="${cy}">You</text>${nodes}
       </svg>
       <div class="rt-legend"><span><i class="d rewarded"></i>Rewarded</span><span><i class="d waiting"></i>Waiting period</span><span><i class="d invited"></i>Invited</span></div>
-      <p class="note">You earn from the friends you invite directly. A friend moves to "Waiting" after their first buy, and to "Rewarded" once the waiting period ends.</p>
+      <p class="note">You earn from the friends you invite directly. A friend shows as "Waiting" after  signing up, and "Rewarded" once their first deposit is confirmed.</p>
       <div class="btn-row"><button class="copy-button" type="button" id="treeInvite">Invite a friend</button></div>`;
     $("treeInvite").onclick = () => $("shareRef").click();
   }
@@ -585,27 +564,16 @@
   /* ---------- Updates tab ---------- */
   function renderChecklist() {
     const U = window.NX ? NX.get() : {};
-    let bio = true,
-      verified = false;
-    try {
-      const v = JSON.parse(localStorage.getItem("nx_bio"));
-      if (v !== null) bio = !!v;
-    } catch (e) {}
-    try {
-      verified = !!JSON.parse(localStorage.getItem("nx_verified"));
-    } catch (e) {}
     const items = [
       ["Add your full name", !!(U.firstName && U.lastName), "profile", ""],
       [
-        "Add your bank details",
-        !!(U.bankName && U.accountNumber && U.accountName),
+        "Add your crypto account",
+        !!(U.cryptoExchange && U.exchangeUid && U.cryptoaddress),
         "profile",
-        "#bank",
+        "#crypto",
       ],
       ["Add your next of kin", !!(U.nokName && U.nokPhone), "profile", "#kin"],
       ["Upload proof of address", !!U.proofName, "profile", ""],
-      ["Turn on biometric login", bio, "settings", ""],
-      ["Verify your identity", verified, "settings", ""],
     ];
     const done = items.filter((i) => i[1]).length;
     $("checkChip").textContent = done + "/" + items.length;
@@ -657,17 +625,31 @@
   }
 
   /* ---------- Dip Radar ---------- */
+  async function binanceGet(path) {
+    let lastErr;
+    for (const host of [
+      "https://api.binance.com",
+      "https://data-api.binance.vision",
+    ]) {
+      try {
+        const res = await fetch(host + path);
+        if (res.ok) return await res.json();
+        lastErr = new Error("HTTP " + res.status);
+      } catch (e) {
+        lastErr = e;
+      }
+    }
+    throw lastErr;
+  }
   async function renderRadar() {
     const title = $("radarTitle"),
       chip = $("radarChip"),
       marker = $("radarMarker");
     try {
-      const res = await fetch(
-        "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=7",
+      const klines = await binanceGet(
+        "/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=168",
       );
-      if (!res.ok) throw new Error("history failed");
-      const json = await res.json();
-      const prices = json.prices.map(([, p]) => p);
+      const prices = klines.map((k) => parseFloat(k[4]));
       const avg = prices.reduce((a, b) => a + b, 0) / prices.length;
       const now = prices[prices.length - 1];
       const diff = ((now - avg) / avg) * 100;
@@ -691,6 +673,26 @@
       chip.textContent = "Offline";
       chip.className = "chip grey";
     }
+  }
+
+  async function loadReferralData() {
+    try {
+      const [info, list] = await Promise.all([
+        NXAPI.api("/api/referral"),
+        NXAPI.api("/api/referrals"),
+      ]);
+      REF = info;
+      REFERRAL.friends = list.map((r) => ({
+        name: r.name || "?",
+        status: r.status === "Active" ? "rewarded" : "waiting",
+      }));
+      try {
+        localStorage.setItem("nx_ref_code", info.code);
+      } catch (e) {}
+    } catch (e) {
+      console.error("Could not load referrals:", e);
+    }
+    safe("Referrals", renderReferrals);
   }
 
   /* ---------- Navigation ---------- */
@@ -734,11 +736,16 @@
   safe("Feeds", renderFeeds);
   safe("Streak", renderStreak);
   safe("Dip Radar", renderRadar);
+  ["pageshow", "focus", "storage"].forEach((ev) =>
+    window.addEventListener(ev, () => safe("Checklist", renderChecklist)),
+  );
+  loadReferralData();
 
   // Real deposits, withdrawals and bonuses from the server
-  NXAPI.sync()
+  NXAPI.api("/api/me")
     .then((me) => {
-      (me.transactions || []).forEach((t) => {
+      const txs = me.transactions || [];
+      txs.forEach((t) => {
         const days = Math.max(
           0,
           Math.floor((Date.now() - new Date(t.date).getTime()) / 86400000),
@@ -756,7 +763,17 @@
           daysAgo: days,
         });
       });
+      // buy streak: which of the last 12 weeks had a confirmed deposit
+      WEEKLY_BUYS.fill(0);
+      txs.forEach((t) => {
+        if (t.type !== "deposit" || t.status !== "Confirmed") return;
+        const w = Math.floor(
+          (Date.now() - new Date(t.date).getTime()) / (7 * 86400000),
+        );
+        if (w >= 0 && w < WEEKLY_BUYS.length) WEEKLY_BUYS[w] = 1;
+      });
       safe("Feeds", renderFeeds);
+      safe("Streak", renderStreak);
     })
-    .catch(() => {});
+    .catch((e) => console.error("Could not load activity:", e));
 })();

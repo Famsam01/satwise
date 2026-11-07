@@ -46,7 +46,7 @@ const PLANS = [
 ];
 
 // Same demo values as home.js. Replace with the user's real data.
-const DEMO_BALANCE_SATS = 184_500;
+const DEMO_BALANCE_SATS = 0;
 const GOAL = { title: "Stack 0.01 BTC", targetSats: 1_000_000 };
 const FALLBACK_PRICE = 65_000;
 
@@ -241,10 +241,10 @@ getBtcPrice().then((price) => {
 });
 
 // Real balance from the server
-NXAPI.sync()
+NXAPI.api("/api/me")
   .then((me) => {
     DEMO_BALANCE_SATS = me.balanceSats;
     renderGoalProgress();
     renderTimeToGoal();
   })
-  .catch(() => {});
+  .catch((e) => console.error("Could not load balance:", e));
