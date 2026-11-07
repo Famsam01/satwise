@@ -1,7 +1,7 @@
 /* Learn page. Needs pages.js loaded first. */
 
 // Change these to your real support details
-const SUPPORT_EMAIL = "support@yourdomain.com";
+const SUPPORT_EMAIL = "satwisehr@gmail.com";
 const SUPPORT_HOURS = "Monday to Friday, 9:00 to 18:00";
 
 document.getElementById("supportEmailText").textContent = SUPPORT_EMAIL;
