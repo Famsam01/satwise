@@ -581,7 +581,7 @@ def tg(method: str, payload: dict, timeout: int = 15):
     if not TG_TOKEN:
         return None
     try:
-        res = httpx.post(f"https://telegram.org{TG_TOKEN}/{method}", json=payload, timeout=timeout).json()
+        res = httpx.post(f"https://api.telegram.org/bot{TG_TOKEN}/{method}", json=payload, timeout=timeout).json()
         if not res.get("ok"):
             print("Telegram rejected:", res)
         return res
