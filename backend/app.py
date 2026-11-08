@@ -1462,7 +1462,7 @@ def admin_overview():
         pw = one("SELECT COUNT(*) c, COALESCE(SUM(receive),0)::bigint s FROM withdrawals WHERE status IN ('Pending','Approved')")
         pd = one("SELECT COUNT(*) c, COALESCE(SUM(sats),0)::bigint s FROM deposits WHERE status='Pending'")
         return {
-            "users": one("SELECT COUNT(*) FROM users")[0],
+            "users": one("SELECT COUNT(*) AS v FROM users")["v"],
             "totalBalanceSats": one("SELECT COALESCE(SUM(balance_sats),0)::bigint FROM users")[0],
             "pendingWithdrawals": dict(pw), "pendingDeposits": dict(pd),
             "depositedSats": one("SELECT COALESCE(SUM(sats),0)::bigint FROM deposits WHERE status='Confirmed'")[0],
