@@ -16,6 +16,7 @@ Sections of this file
   3. Errors+security 7. Rotating addresses 11. Auth + account API     15. Static files
   4. Email           8. Referral bonus     12. Money API
 """
+import socket
 import json
 import urllib.request
 import atexit
@@ -576,6 +577,13 @@ def mail_user(user_id: int, subject: str, body: str) -> None:
 # 5. TELEGRAM BOT
 # =====================================================================
 _stop = threading.Event()
+
+_orig_getaddrinfo = socket.getaddrinfo
+def _ipv4_getaddrinfo(host, port, family=0, type=0, proto=0, flags=0):
+    if host == "api.telegram.org":
+        family = socket.AF_INET
+    return _orig_getaddrinfo(host, port, family, type, proto, flags)
+socket.getaddrinfo = _ipv4_getaddrinfo
  
 def tg(method: str, payload: dict, timeout: int = 15):
     """Call the Telegram Bot API. Returns the reply, or None if Telegram is off/unreachable."""
@@ -604,17 +612,18 @@ def tg(method: str, payload: dict, timeout: int = 15):
 
  
 def notify(text: str, reply_markup: dict | None = None) -> None:
-        """Send you (the admin) a Telegram message."""
-        if not (TG_TOKEN and TG_CHAT):
-            print(f"Telegram skipped: token={bool(TG_TOKEN)}, chat={bool(TG_CHAT)}")
-            return
-        tg("sendMessage", {
-            "chat_id": TG_CHAT,
-            "text": text,
-            "parse_mode": "HTML",
-            "disable_web_page_preview": True,
-            **({"reply_markup": reply_markup} if reply_markup else {}),
-        }, timeout=5)
+    """Send you (the admin) a Telegram message without blocking the webpage."""
+    if not (TG_TOKEN and TG_CHAT):
+        print(f"Telegram skipped: token={bool(TG_TOKEN)}, chat={bool(TG_CHAT)}")
+        return
+    payload = {
+        "chat_id": TG_CHAT,
+        "text": text,
+        "parse_mode": "HTML",
+        "disable_web_page_preview": True,
+        **({"reply_markup": reply_markup} if reply_markup else {}),
+    }
+    threading.Thread(target=tg, args=("sendMessage", payload, 8), daemon=False).start()
 
         
  
