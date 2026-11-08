@@ -583,7 +583,7 @@ def tg(method: str, payload: dict, timeout: int = 15):
         return None
     try:
         req = urllib.request.Request(
-            f"https://telegram.org{TG_TOKEN}/{method}",
+            f"https://api.telegram.org/bot{TG_TOKEN}/{method}",
             data=json.dumps(payload).encode("utf-8"),
             headers={"Content-Type": "application/json"},
             method="POST",
