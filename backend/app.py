@@ -590,14 +590,20 @@ def tg(method: str, payload: dict, timeout: int = 15):
         return None
 
  
- 
 def notify(text: str, reply_markup: dict | None = None) -> None:
-    """Send you (the admin) a Telegram message, in the background."""
-    if not (TG_TOKEN and TG_CHAT):
-        print(f"Telegram skipped: token={bool(TG_TOKEN)}, chat={bool(TG_CHAT)}")
-        return
-        return
-    
+        """Send you (the admin) a Telegram message."""
+        if not (TG_TOKEN and TG_CHAT):
+            print(f"Telegram skipped: token={bool(TG_TOKEN)}, chat={bool(TG_CHAT)}")
+            return
+        tg("sendMessage", {
+            "chat_id": TG_CHAT,
+            "text": text,
+            "parse_mode": "HTML",
+            "disable_web_page_preview": True,
+            **({"reply_markup": reply_markup} if reply_markup else {}),
+        }, timeout=5)
+
+        
  
 def handle_update(u: dict) -> None:
     """React to one Telegram event: an Approve/Reject button press, /paid, or /stats."""
