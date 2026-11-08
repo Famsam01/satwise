@@ -594,12 +594,10 @@ def tg(method: str, payload: dict, timeout: int = 15):
 def notify(text: str, reply_markup: dict | None = None) -> None:
     """Send you (the admin) a Telegram message, in the background."""
     if not (TG_TOKEN and TG_CHAT):
+        print(f"Telegram skipped: token={bool(TG_TOKEN)}, chat={bool(TG_CHAT)}")
         return
-    payload = {"chat_id": TG_CHAT, "text": text, "parse_mode": "HTML"}
-    if reply_markup:
-        payload["reply_markup"] = reply_markup
-    threading.Thread(target=tg, args=("sendMessage", payload), daemon=True).start()
- 
+        return
+    
  
 def handle_update(u: dict) -> None:
     """React to one Telegram event: an Approve/Reject button press, /paid, or /stats."""
