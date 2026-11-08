@@ -646,6 +646,7 @@ def telegram_loop() -> None:
         print("Telegram disabled (no token)")
         return
     offset = 0
+    last_err = None
     while not _stop.is_set():
         res = tg("getUpdates", {"offset": offset, "timeout": 25, "allowed_updates": ["callback_query", "message"]}, timeout=40)
         if not res or not res.get("ok"):
