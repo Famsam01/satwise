@@ -618,15 +618,26 @@ def handle_update(u: dict) -> None:
         tg("answerCallbackQuery", {"callback_query_id": q["id"], "text": "Done" if ok else "Already handled"})
         return
     m = u.get("message")
-    if m and m.get("text") and str(m["chat"]["id"]) == TG_CHAT:
-        parts = m["text"].strip().split()
-        if parts[0] == "/paid" and len(parts) > 1:
-            done = mark_paid(parts[1], " ".join(parts[2:]))
-            notify(f"💸 {esc(parts[1])} marked Completed." if done else f"Nothing to update for {esc(parts[1])} (must be Approved first).")
-        elif parts[0] == "/stats":
-            with db() as c:
-                row = c.execute("SELECT COUNT(*) AS n, COALESCE(SUM(balance_sats),0)::bigint AS t FROM users").fetchone()
-            notify(f"Users: {row['n']}\nTotal user balances: {fmt(row['t'])} sats")
+    if not (m and m.get("text")):
+        return
+    chat_id = str(m["chat"]["id"])
+    parts = m["text"].strip().split()
+    cmd = parts[0].split("@")[0]
+    if cmd == "/start":  # works for anyone: shows the chat ID to put in Render
+        tg("sendMessage", {"chat_id": chat_id,
+                           "text": f"Your chat ID is {chat_id}\nSet it in Render as TELEGRAM_ADMIN_CHAT_ID."})
+        return
+    if chat_id != TG_CHAT:
+        return
+    if cmd == "/paid" and len(parts) > 1:
+        done = mark_paid(parts[1], " ".join(parts[2:]))
+        notify(f"💸 {esc(parts[1])} marked Completed." if done else f"Nothing to update for {esc(parts[1])} (must be Approved first).")
+    elif cmd == "/stats":
+        with db() as c:
+            row = c.execute("SELECT COUNT(*) AS n, COALESCE(SUM(balance_sats),0)::bigint AS t FROM users").fetchone()
+        notify(f"Users: {row['n']}\nTotal user balances: {fmt(row['t'])} sats")
+    else:
+        notify("Commands: /stats and /paid <withdrawal id> <txid>")
  
  
 def telegram_loop() -> None:
@@ -638,14 +649,11 @@ def telegram_loop() -> None:
     while not _stop.is_set():
         res = tg("getUpdates", {"offset": offset, "timeout": 25, "allowed_updates": ["callback_query", "message"]}, timeout=40)
         if not res or not res.get("ok"):
+            if res != last_err:
+                print("telegram getUpdates failed:", res)  # 401 = wrong token, 409 = another copy or a webhook
+            last_err = res
             _stop.wait(5)
             continue
-        for u in res["result"]:
-            offset = u["update_id"] + 1
-            try:
-                handle_update(u)
-            except Exception as e:  # noqa: BLE001
-                print("telegram handler error:", e)
  
  
 # =====================================================================
