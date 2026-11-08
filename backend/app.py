@@ -16,6 +16,8 @@ Sections of this file
   3. Errors+security 7. Rotating addresses 11. Auth + account API     15. Static files
   4. Email           8. Referral bonus     12. Money API
 """
+import json
+import urllib.request
 import atexit
 import hashlib
 import hmac
@@ -575,19 +577,26 @@ def mail_user(user_id: int, subject: str, body: str) -> None:
 # =====================================================================
 _stop = threading.Event()
  
- 
 def tg(method: str, payload: dict, timeout: int = 15):
     """Call the Telegram Bot API. Returns the reply, or None if Telegram is off/unreachable."""
     if not TG_TOKEN:
         return None
     try:
-        res = httpx.post(f"https://api.telegram.org/bot{TG_TOKEN}/{method}", json=payload, timeout=timeout).json()
+        req = urllib.request.Request(
+            f"https://telegram.org{TG_TOKEN}/{method}",
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            res = json.loads(resp.read().decode("utf-8"))
         if not res.get("ok"):
             print("Telegram rejected:", res)
         return res
     except Exception as e:  # noqa: BLE001
         print("Telegram error:", e)
         return None
+
 
  
 def notify(text: str, reply_markup: dict | None = None) -> None:
