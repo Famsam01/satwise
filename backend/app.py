@@ -80,7 +80,7 @@ CORS_ORIGIN = os.getenv("CORS_ORIGIN", "https://satwise.onrender.com")
 SMTP_URL = os.getenv("SMTP_URL", "").strip()
 MAIL_FROM = os.getenv("MAIL_FROM", "Nexvest <no-reply@localhost>")
 TG_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN") or os.getenv("TG_TOKEN", "").strip()
-TG_CHAT = os.getenv("TELEGRAM_ADMIN_CHAT_ID") or os.getenv("TG_CHAT", "").strip()
+TG_CHAT = "".join((os.getenv("TG_CHAT") or os.getenv("TELEGRAM_ADMIN_CHAT_ID") or "").split()) 
 HD_XPUB = os.getenv("HD_XPUB", "").strip()
 MEMPOOL_API = os.getenv("MEMPOOL_API", "https://mempool.space/api").rstrip("/")
  
@@ -593,6 +593,10 @@ def tg(method: str, payload: dict, timeout: int = 15):
         if not res.get("ok"):
             print("Telegram rejected:", res)
         return res
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", errors="ignore")
+        print(f"Telegram HTTP {e.code}: {body}")
+        return None
     except Exception as e:  # noqa: BLE001
         print("Telegram error:", e)
         return None
